@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "248219729499",
+    "project_id": "unified-assist-wra4g4",
+    "storage_bucket": "unified-assist-wra4g4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248219729499:android:8542ca7c1753ec7016097e",
+        "android_client_info": {
+          "package_name": "com.thesis.unifiedassist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAL8uhcfz1PUNvRLoZOsP6SZYq89Bffkt8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
