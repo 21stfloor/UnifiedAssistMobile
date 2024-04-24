@@ -95,6 +95,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
   image: ^4.1.7
+  just_audio: ^0.9.37
+  flutter_dotenv: ^5.1.0
+  fluttertoast: ^8.2.5
 
 dependency_overrides:
   http: 1.2.0
@@ -140,6 +143,7 @@ flutter:
     - assets/rive_animations/
     - assets/pdfs/
     - assets/models/
+    - .env
 
   
   # An image asset can refer to one or more resolution-specific "variants", see

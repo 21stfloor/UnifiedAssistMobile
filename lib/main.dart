@@ -1,27 +1,36 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'auth/firebase_auth/firebase_user_provider.dart';
 import 'auth/firebase_auth/auth_util.dart';
 
 import 'backend/firebase/firebase_config.dart';
-import 'backend/schema/regions_detection.dart';
 import 'flutter_flow/flutter_flow_theme.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 import 'flutter_flow/nav/nav.dart';
-import 'package:http/http.dart' as http;
-import 'package:camera/camera.dart';
+import 'package:flutter/services.dart';
 
 
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
+  await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
   usePathUrlStrategy();
   await initFirebase();
 
   await FlutterFlowTheme.initialize();
-  runApp(const MyApp());
+
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((value) =>
+      runApp(MaterialApp(
+        builder: FToastBuilder(),
+        home: const MyApp(),
+        navigatorKey: navigatorKey,
+      ),));
+
 }
 
 class MyApp extends StatefulWidget {

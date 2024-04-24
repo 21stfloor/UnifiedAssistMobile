@@ -1,3 +1,6 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../backend/schema/regions_detection.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -8,8 +11,6 @@ import 'package:http/http.dart' as http;
 import 'obstacle_page_model.dart';
 export 'obstacle_page_model.dart';
 import 'dart:convert';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'dart:convert' as convert;
 
@@ -24,9 +25,10 @@ class ObstaclePageWidget extends StatefulWidget {
 class _ObstaclePageWidgetState extends State<ObstaclePageWidget> {
   late ObstaclePageModel _model;
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  late CameraController controller;
+  CameraController? controller;
   late List<CameraDescription> _cameras;
-  CameraImage? _image;
+  final player = AudioPlayer();
+  bool _isLoadingVoice = false;
 
   late String base64Captured;
 
@@ -42,12 +44,11 @@ class _ObstaclePageWidgetState extends State<ObstaclePageWidget> {
     _cameras = await availableCameras();
 
     controller = CameraController(_cameras[0], ResolutionPreset.max);
-    controller.initialize().then((_) {
+    controller!.initialize().then((_) {
       if (!mounted) {
         return;
       }
-      controller.startImageStream((image) {
-        _image = image;
+      controller!.startImageStream((image) {
         setState(() { });
       });
     }).catchError((Object e) {
@@ -67,7 +68,7 @@ class _ObstaclePageWidgetState extends State<ObstaclePageWidget> {
   @override
   void dispose() {
     _model.dispose();
-
+    player.dispose();
     super.dispose();
   }
 
@@ -182,14 +183,14 @@ class _ObstaclePageWidgetState extends State<ObstaclePageWidget> {
           child:
               Stack(children: [
 
-                controller.value.isInitialized == true?
+                controller != null?
                 Container(
                     width: MediaQuery.sizeOf(context).width * 1.0,
                     height: MediaQuery.sizeOf(context).height * 1.0,
                     decoration: BoxDecoration(
                       color: FlutterFlowTheme.of(context).secondaryBackground,
                     ),
-                    child:CameraPreview(controller)
+                    child:CameraPreview(controller!)
                 ): Container(),
                 Container(
                   width: MediaQuery.sizeOf(context).width * 1.0,
@@ -208,15 +209,21 @@ class _ObstaclePageWidgetState extends State<ObstaclePageWidget> {
                           child: Padding(
                             padding:
                             const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 10.0, 0.0),
-                            child: FFButtonWidget(
+                            child:
+                            _isLoadingVoice? Container() :
+                            FFButtonWidget(
                               onPressed: () async {
+                                setState(() {
+                                  _isLoadingVoice = true;
+                                });
                                 print('toggleScan pressed ...');
-                                XFile photo = await controller.takePicture();
+                                XFile photo = await controller!.takePicture();
                                 List<int> photoAsBytes = await photo.readAsBytes();
                                 base64Captured = convert.base64Encode(photoAsBytes);
                                 print(base64Captured);
                                 // print(await cameraImageToBase64(_image!));
                                 postData();
+
                               },
                               text: '',
                               icon: const Icon(
@@ -299,22 +306,8 @@ class _ObstaclePageWidgetState extends State<ObstaclePageWidget> {
     );
   }
 
-  // Future<String> cameraImageToBase64(CameraImage image) async {
-  //   try {
-  //     // Convert the image planes to a single plane Uint8List
-  //     Uint8List bytes = concatenatePlanes(image.planes);
-  //
-  //     // Encode the bytes to base64
-  //     base64Captured = base64Encode(bytes);
-  //     print(base64Captured);
-  //     return base64Captured;
-  //   } catch (e) {
-  //     print("Error converting camera image to base64: $e");
-  //     return "";
-  //   }
-  // }
 
-  Future<void> postData() async {
+  Future<String?> postData() async {
     // Define the URL for the POST request
     Uri url = Uri.parse('https://api.clarifai.com/v2/users/clarifai/apps/main/models/general-image-detection/versions/1580bb1932594c93b7e2e04456af7c6f/outputs');
 
@@ -375,14 +368,89 @@ class _ObstaclePageWidgetState extends State<ObstaclePageWidget> {
               print('Bounding Box: ${region.boundingBox}');
             }
           });
+
+          var text = allTextDetected.toString();
+          print(text);
+          playTextToSpeech(text);
+
         });
       } else {
+        setState(() {
+          _isLoadingVoice = false;
+        });
         // Request failed with an error code, handle the error
         print('Error: ${response.statusCode}');
+        Fluttertoast.showToast(
+            msg: response.body);
       }
     } catch (e) {
+      Fluttertoast.showToast(
+          msg: e.toString());
       // An error occurred while making the request
+      setState(() {
+        _isLoadingVoice = false;
+      });
       print('Error: $e');
     }
+  }
+
+  Future<void> playTextToSpeech(String text) async {
+
+    String voiceRachel =
+        '21m00Tcm4TlvDq8ikWAM'; //Rachel voice - change if you know another Voice ID
+
+    String url = 'https://api.elevenlabs.io/v1/text-to-speech/$voiceRachel';
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'accept': 'audio/mpeg',
+        'xi-api-key': dotenv.get('EL_API_KEY'),
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        "text": text,
+        "model_id": "eleven_monolingual_v1",
+        "voice_settings": {"stability": .15, "similarity_boost": .75}
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final bytes = response.bodyBytes; //get the bytes ElevenLabs sent back
+      await player.setAudioSource(MyCustomSource(
+          bytes)); //send the bytes to be read from the JustAudio library
+      player.play(); //play the audio
+      Fluttertoast.showToast(
+          msg: text);
+      setState(() {
+        _isLoadingVoice = false;
+      });
+    } else {
+      Fluttertoast.showToast(
+          msg: response.body);
+      // throw Exception('Failed to load audio');
+      setState(() {
+        _isLoadingVoice = false;
+      });
+      return;
+    }
+  }
+}
+
+class MyCustomSource extends StreamAudioSource {
+  final List<int> bytes;
+
+  MyCustomSource(this.bytes);
+
+  @override
+  Future<StreamAudioResponse> request([int? start, int? end]) async {
+    start ??= 0;
+    end ??= bytes.length;
+    return StreamAudioResponse(
+      sourceLength: bytes.length,
+      contentLength: end - start,
+      offset: start,
+      stream: Stream.value(bytes.sublist(start, end)),
+      contentType: 'audio/mpeg',
+    );
   }
 }
