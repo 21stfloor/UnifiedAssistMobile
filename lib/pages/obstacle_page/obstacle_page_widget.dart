@@ -8,12 +8,15 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'camera_controller.dart';
+import 'camera_preview.dart';
 import 'obstacle_page_model.dart';
 export 'obstacle_page_model.dart';
 import 'dart:convert';
-import 'package:camera/camera.dart';
 import 'dart:convert' as convert;
-
+import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:camera_android_camerax/camera_android_camerax.dart';
+import 'package:camera_platform_interface/camera_platform_interface.dart';
 
 class ObstaclePageWidget extends StatefulWidget {
   const ObstaclePageWidget({super.key});
@@ -26,11 +29,18 @@ class _ObstaclePageWidgetState extends State<ObstaclePageWidget> {
   late ObstaclePageModel _model;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   CameraController? controller;
-  late List<CameraDescription> _cameras;
+  List<CameraDescription> _cameras = <CameraDescription>[];
   final player = AudioPlayer();
   bool _isLoadingVoice = false;
 
   late String base64Captured;
+  final Iterable<Duration> pauses = [
+    const Duration(milliseconds: 500),
+    const Duration(milliseconds: 1000),
+    const Duration(milliseconds: 500),
+  ];
+
+  bool showCamera = false;
 
   @override
   void initState() {
@@ -43,26 +53,44 @@ class _ObstaclePageWidgetState extends State<ObstaclePageWidget> {
   Future<void> initializeCamera() async {
     _cameras = await availableCameras();
 
-    controller = CameraController(_cameras[0], ResolutionPreset.max);
-    controller!.initialize().then((_) {
-      if (!mounted) {
-        return;
-      }
-      controller!.startImageStream((image) {
-        setState(() { });
-      });
-    }).catchError((Object e) {
-      if (e is CameraException) {
-        switch (e.code) {
-          case 'CameraAccessDenied':
-          // Handle access errors here.
-            break;
-          default:
-          // Handle other errors here.
-            break;
-        }
-      }
-    });
+    // controller = CameraController(_cameras[0], ResolutionPreset.max);
+    onNewCameraSelected(_cameras[0]);
+    // controller!.initialize().then((_) {
+    //   if (!mounted) {
+    //     return;
+    //   }
+    //   controller!.startImageStream((image) {
+    //     setState(() { showCamera=true; });
+    //   });
+    // }).catchError((Object e) {
+    //   if (e is CameraException) {
+    //     switch (e.code) {
+    //       case 'CameraAccessDenied':
+    //       // Handle access errors here.
+    //         break;
+    //       default:
+    //       // Handle other errors here.
+    //         break;
+    //     }
+    //   }
+    // });
+  }
+
+  // #docregion AppLifecycle
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final CameraController? cameraController = controller;
+
+    // App state changed before we got the chance to initialize.
+    if (cameraController == null || !cameraController.value.isInitialized) {
+      return;
+    }
+
+    if (state == AppLifecycleState.inactive) {
+      cameraController.dispose();
+    } else if (state == AppLifecycleState.resumed) {
+      onNewCameraSelected(cameraController.description);
+    }
   }
 
   @override
@@ -182,16 +210,7 @@ class _ObstaclePageWidgetState extends State<ObstaclePageWidget> {
           top: true,
           child:
               Stack(children: [
-
-                controller != null?
-                Container(
-                    width: MediaQuery.sizeOf(context).width * 1.0,
-                    height: MediaQuery.sizeOf(context).height * 1.0,
-                    decoration: BoxDecoration(
-                      color: FlutterFlowTheme.of(context).secondaryBackground,
-                    ),
-                    child:CameraPreview(controller!)
-                ): Container(),
+                _cameraPreviewWidget(),
                 Container(
                   width: MediaQuery.sizeOf(context).width * 1.0,
                   height: MediaQuery.sizeOf(context).height * 1.0,
@@ -222,8 +241,20 @@ class _ObstaclePageWidgetState extends State<ObstaclePageWidget> {
                                 base64Captured = convert.base64Encode(photoAsBytes);
                                 print(base64Captured);
                                 // print(await cameraImageToBase64(_image!));
-                                postData();
-
+                                // postData();
+                                try {
+                                  var result = await _postData();
+                                  print(result!.predictions.toString());
+                                  if(result.predictions.isNotEmpty) {
+                                    Vibrate.vibrateWithPauses(pauses);
+                                  }
+                                }
+                                catch (error){
+                                  print(error);
+                                }
+                                setState(() {
+                                  _isLoadingVoice = false;
+                                });
                               },
                               text: '',
                               icon: const Icon(
@@ -272,15 +303,34 @@ class _ObstaclePageWidgetState extends State<ObstaclePageWidget> {
                               end: const AlignmentDirectional(1.0, 0),
                             ),
                           ),
-                          child: Column(
+                          child:
+                          Column(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.remove_red_eye,
-                                color: FlutterFlowTheme.of(context).alternate,
-                                size: 24.0,
-                              ),
+                              IconButton(onPressed: () async {
+                                print("VIEW clicked");
+
+                                onPausePreviewButtonPressed();
+                                // setState(() {
+                                //   showCamera = !showCamera;
+                                // });
+                                //
+                                // if(showCamera){
+                                //   await controller!.startImageStream((image) {
+                                //     setState(() { });
+                                //   });
+                                // }
+                                // else{
+                                //     await controller!.stopImageStream();
+                                // }
+                              }, icon:
+                                  Icon(
+                                    Icons.remove_red_eye,
+                                    color: FlutterFlowTheme.of(context).alternate,
+                                    size: 24.0,
+                                  )),
+
                               Text(
                                 'VIEW',
                                 style:
@@ -304,6 +354,45 @@ class _ObstaclePageWidgetState extends State<ObstaclePageWidget> {
         ),
       ),
     );
+  }
+
+  Widget _cameraPreviewWidget() {
+    final CameraController? cameraController = controller;
+
+    if (cameraController == null || !cameraController.value.isInitialized || cameraController.value.isPreviewPaused) {
+      return Container(
+        decoration: const BoxDecoration(
+          color: Colors.black,
+        ),
+      );
+    } else {
+      return Container(
+      width: MediaQuery.sizeOf(context).width * 1.0,
+        height: MediaQuery.sizeOf(context).height * 1.0,
+        decoration: const BoxDecoration(
+        color: Colors.black,
+      ),
+      child:
+       CameraPreview(controller!)
+      );
+    }
+  }
+
+  Future<PostResponse?> _postData() async {
+
+    final response = await http.post(
+      Uri.parse('https://detect.roboflow.com/furniture_detector/1?api_key=Fm5i5qj5uNmV7UzI1UPS&confidence=0.5'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: base64Captured,
+    );
+
+    if (response.statusCode == 200) {
+      return PostResponse.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load post response');
+    }
   }
 
 
@@ -434,6 +523,92 @@ class _ObstaclePageWidgetState extends State<ObstaclePageWidget> {
       return;
     }
   }
+
+  Future<void> onNewCameraSelected(CameraDescription cameraDescription) async {
+    final CameraController? oldController = controller;
+    if (oldController != null) {
+      // `controller` needs to be set to null before getting disposed,
+      // to avoid a race condition when we use the controller that is being
+      // disposed. This happens when camera permission dialog shows up,
+      // which triggers `didChangeAppLifecycleState`, which disposes and
+      // re-creates the controller.
+      controller = null;
+      await oldController.dispose();
+    }
+
+    final CameraController cameraController = CameraController(
+      cameraDescription,
+      mediaSettings: const MediaSettings(
+        resolutionPreset: ResolutionPreset.low,
+        fps: 15,
+        videoBitrate: 200000,
+        audioBitrate: 32000,
+      ),
+      imageFormatGroup: ImageFormatGroup.jpeg,
+    );
+
+    controller = cameraController;
+
+    // If the controller is updated then update the UI.
+    cameraController.addListener(() {
+      if (mounted) {
+        setState(() {});
+      }
+      if (cameraController.value.hasError) {
+        Fluttertoast.showToast(msg:
+            'Camera error ${cameraController.value.errorDescription}');
+      }
+    });
+
+    try {
+      await cameraController.initialize();
+    } on CameraException catch (e) {
+      switch (e.code) {
+        case 'CameraAccessDenied':
+          Fluttertoast.showToast(msg:'You have denied camera access.');
+        case 'CameraAccessDeniedWithoutPrompt':
+        // iOS only
+          Fluttertoast.showToast(msg:'Please go to Settings app to enable camera access.');
+        case 'CameraAccessRestricted':
+        // iOS only
+          Fluttertoast.showToast(msg:'Camera access is restricted.');
+        case 'AudioAccessDenied':
+          Fluttertoast.showToast(msg:'You have denied audio access.');
+        case 'AudioAccessDeniedWithoutPrompt':
+        // iOS only
+          Fluttertoast.showToast(msg:'Please go to Settings app to enable audio access.');
+        case 'AudioAccessRestricted':
+        // iOS only
+          Fluttertoast.showToast(msg:'Audio access is restricted.');
+        default:
+            Fluttertoast.showToast(msg: '${e.description}');
+          break;
+      }
+    }
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> onPausePreviewButtonPressed() async {
+    final CameraController? cameraController = controller;
+
+    if (cameraController == null || !cameraController.value.isInitialized) {
+      Fluttertoast.showToast(msg: 'Error: select a camera first.');
+      return;
+    }
+
+    if (cameraController.value.isPreviewPaused) {
+      await cameraController.resumePreview();
+    } else {
+      await cameraController.pausePreview();
+    }
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
 }
 
 class MyCustomSource extends StreamAudioSource {
@@ -454,3 +629,21 @@ class MyCustomSource extends StreamAudioSource {
     );
   }
 }
+
+
+class PostResponse {
+  final double time;
+  final Map<String, dynamic> image;
+  final List<dynamic> predictions;
+
+  PostResponse({required this.time, required this.image, required this.predictions});
+
+  factory PostResponse.fromJson(Map<String, dynamic> json) {
+    return PostResponse(
+      time: json['time'],
+      image: json['image'],
+      predictions: json['predictions'],
+    );
+  }
+}
+
