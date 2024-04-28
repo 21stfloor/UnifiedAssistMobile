@@ -1,3 +1,9 @@
+import 'dart:async';
+import 'dart:developer';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:http/http.dart' as http;
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -6,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'text_page_model.dart';
 export 'text_page_model.dart';
+import 'dart:convert';
+import 'package:flutter_scalable_ocr/flutter_scalable_ocr.dart';
 
 class TextPageWidget extends StatefulWidget {
   const TextPageWidget({super.key});
@@ -18,6 +26,14 @@ class _TextPageWidgetState extends State<TextPageWidget> {
   late TextPageModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  String text = "";
+  final StreamController<String> controller = StreamController<String>();
+  final player = AudioPlayer();
+  bool _isLoadingVoice = false;
+
+  void setText(value) {
+    controller.add(value);
+  }
 
   @override
   void initState() {
@@ -28,7 +44,8 @@ class _TextPageWidgetState extends State<TextPageWidget> {
   @override
   void dispose() {
     _model.dispose();
-
+    player.dispose();
+    controller.close();
     super.dispose();
   }
 
@@ -142,76 +159,200 @@ class _TextPageWidgetState extends State<TextPageWidget> {
         ),
         body: SafeArea(
           top: true,
-          child: Container(
-            width: MediaQuery.sizeOf(context).width * 1.0,
-            height: MediaQuery.sizeOf(context).height * 1.0,
-            decoration: BoxDecoration(
-              color: FlutterFlowTheme.of(context).secondaryBackground,
-            ),
-            child: Align(
-              alignment: const AlignmentDirectional(-1.0, -1.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Align(
-                    alignment: const AlignmentDirectional(1.0, 1.0),
-                    child: Padding(
-                      padding:
-                          const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 10.0, 0.0),
-                      child: FFButtonWidget(
-                        onPressed: () {
-                          print('Button pressed ...');
-                        },
-                        text: '',
-                        icon: const Icon(
-                          Icons.camera_alt,
-                          size: 50.0,
-                        ),
-                        options: FFButtonOptions(
-                          height: 65.0,
-                          padding: const EdgeInsetsDirectional.fromSTEB(
-                              8.0, 0.0, 0.0, 0.0),
-                          iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                              0.0, 0.0, 0.0, 0.0),
-                          color: FlutterFlowTheme.of(context).primary,
-                          textStyle:
-                              FlutterFlowTheme.of(context).titleSmall.override(
-                                    fontFamily: 'Inter',
-                                    color: Colors.white,
-                                    letterSpacing: 0.0,
-                                  ),
-                          elevation: 3.0,
-                          borderSide: const BorderSide(
-                            color: Colors.transparent,
-                            width: 1.0,
-                          ),
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(45.0),
-                            bottomRight: Radius.circular(45.0),
-                            topLeft: Radius.circular(45.0),
-                            topRight: Radius.circular(45.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: const AlignmentDirectional(0.0, 1.0),
-                    child: Container(
-                      width: MediaQuery.sizeOf(context).width * 1.0,
-                      height: 100.0,
-                      decoration: BoxDecoration(
-                        color: FlutterFlowTheme.of(context).primary,
-                      ),
-                    ),
-                  ),
-                ].divide(const SizedBox(height: 10.0)),
+          child:
+          Stack(
+            children: [
+          Align(
+          alignment: const AlignmentDirectional(-1.0, 0),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+              ScalableOCR(
+                  paintboxCustom: Paint()
+                    ..style = PaintingStyle.stroke
+                    ..strokeWidth = 4.0
+                    ..color = const Color.fromARGB(153, 102, 160, 241),
+                  boxLeftOff: 12,
+                  // boxBottomOff: 2.5,
+                  boxRightOff: 12,
+                  // boxTopOff: 2.5,
+                  boxHeight: MediaQuery.of(context).size.height / 3,
+                  getRawData: (value) {
+                    inspect(value);
+                  },
+                  getScannedText: (value) {
+                    setText(value);
+                    setState(() {
+                      text = value;
+                    });
+                    print(value);
+                  }),
+              StreamBuilder<String>(
+                stream: controller.stream,
+                builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  return Result(text: snapshot.data != null ? snapshot.data! : "");
+                },
               ),
-            ),
-          ),
+
+              ])),
+              Container(
+                width: MediaQuery.sizeOf(context).width * 1.0,
+                height: MediaQuery.sizeOf(context).height * 1.0,
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(0, 0, 0, 0),
+                ),
+                child: Align(
+                  alignment: const AlignmentDirectional(-1.0, -1.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Align(
+                        alignment: const AlignmentDirectional(1.0, 1.0),
+                        child: Padding(
+                          padding:
+                              const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 10.0, 0.0),
+                          child:
+                          _isLoadingVoice? Container() :
+                          FFButtonWidget(
+                            onPressed: () {
+                              print('Button pressed ...');
+                              if(!player.playing && text.isNotEmpty) {
+                                playTextToSpeech(text);
+                              }
+                            },
+                            text: '',
+                            icon: const Icon(
+                              Icons.camera_alt,
+                              size: 50.0,
+                            ),
+                            options: FFButtonOptions(
+                              height: 65.0,
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  8.0, 0.0, 0.0, 0.0),
+                              iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 0.0, 0.0, 0.0),
+                              color: FlutterFlowTheme.of(context).primary,
+                              textStyle:
+                                  FlutterFlowTheme.of(context).titleSmall.override(
+                                        fontFamily: 'Inter',
+                                        color: Colors.white,
+                                        letterSpacing: 0.0,
+                                      ),
+                              elevation: 3.0,
+                              borderSide: const BorderSide(
+                                color: Colors.transparent,
+                                width: 1.0,
+                              ),
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(45.0),
+                                bottomRight: Radius.circular(45.0),
+                                topLeft: Radius.circular(45.0),
+                                topRight: Radius.circular(45.0),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Align(
+                      //   alignment: const AlignmentDirectional(0.0, 1.0),
+                      //   child: Container(
+                      //     width: MediaQuery.sizeOf(context).width * 1.0,
+                      //     height: 100.0,
+                      //     decoration: BoxDecoration(
+                      //       color: FlutterFlowTheme.of(context).primary,
+                      //     ),
+                      //   ),
+                      // ),
+                    ].divide(const SizedBox(height: 10.0)),
+                  ),
+                ),
+              )
+
+            ]
+          )
         ),
       ),
+    );
+  }
+
+
+  Future<void> playTextToSpeech(String textToRead) async {
+    setState(() {
+      _isLoadingVoice = true;
+    });
+    String voiceRachel =
+        '21m00Tcm4TlvDq8ikWAM'; //Rachel voice - change if you know another Voice ID
+
+    String url = 'https://api.elevenlabs.io/v1/text-to-speech/$voiceRachel';
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'accept': 'audio/mpeg',
+        'xi-api-key': dotenv.get('EL_API_KEY'),
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        "text": textToRead,
+        "model_id": "eleven_monolingual_v1",
+        "voice_settings": {"stability": .15, "similarity_boost": .75}
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final bytes = response.bodyBytes; //get the bytes ElevenLabs sent back
+      await player.setAudioSource(MyCustomSource(
+          bytes)); //send the bytes to be read from the JustAudio library
+      player.play(); //play the audio
+      Fluttertoast.showToast(
+          msg: textToRead);
+      setState(() {
+        text = "";
+        _isLoadingVoice = false;
+      });
+    } else {
+      Fluttertoast.showToast(
+          msg: response.body);
+      // throw Exception('Failed to load audio');
+      setState(() {
+        _isLoadingVoice = false;
+      });
+      return;
+    }
+  }
+
+}
+
+class Result extends StatelessWidget {
+  const Result({
+    Key? key,
+    required this.text,
+  }) : super(key: key);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text("Readed text: $text");
+  }
+}
+
+class MyCustomSource extends StreamAudioSource {
+  final List<int> bytes;
+
+  MyCustomSource(this.bytes);
+
+  @override
+  Future<StreamAudioResponse> request([int? start, int? end]) async {
+    start ??= 0;
+    end ??= bytes.length;
+    return StreamAudioResponse(
+      sourceLength: bytes.length,
+      contentLength: end - start,
+      offset: start,
+      stream: Stream.value(bytes.sublist(start, end)),
+      contentType: 'audio/mpeg',
     );
   }
 }
