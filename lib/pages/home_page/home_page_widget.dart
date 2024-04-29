@@ -1,9 +1,11 @@
 import '/components/appbar/appbar_widget.dart';
+import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_web_view.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'home_page_model.dart';
 export 'home_page_model.dart';
 
@@ -183,6 +185,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
               child: Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 40.0),
                 child: PageView(
+                  physics: const NeverScrollableScrollPhysics(),
                   controller: _model.pageViewController ??=
                       PageController(initialPage: 0),
                   scrollDirection: Axis.horizontal,
@@ -475,6 +478,14 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                           .primaryText,
                                     ),
                                   ),
+                                  child: InkWell(
+                                    splashColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () async {
+                                      context.pushNamed('DocumentsPage');
+                                    },
                                   child: Column(
                                     mainAxisSize: MainAxisSize.max,
                                     mainAxisAlignment:
@@ -507,6 +518,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                       ),
                                     ],
                                   ),
+                                ),
                                 ),
                               ),
                             ],
@@ -687,14 +699,31 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                 ],
                               ),
                             ),
-                          const FlutterFlowWebView(
-                            content:
-                                'https://21stfloor.github.io/UnifiedAssist/',
+                          FlutterFlowWebView(
+                            content: _model.webUrl,
                             bypass: false,
-                            height: 500.0,
-                            verticalScroll: false,
+                            height: MediaQuery.sizeOf(context).height * 1.0,
+                            verticalScroll: true,
                             horizontalScroll: false,
                           ),
+                          // FlutterFlowIconButton(
+                          //   borderColor: FlutterFlowTheme.of(context).primary,
+                          //   borderRadius: 20.0,
+                          //   borderWidth: 1.0,
+                          //   buttonSize: 40.0,
+                          //   fillColor: FlutterFlowTheme.of(context).accent1,
+                          //   icon: FaIcon(
+                          //     FontAwesomeIcons.globe,
+                          //     color: FlutterFlowTheme.of(context).primaryText,
+                          //     size: 24.0,
+                          //   ),
+                          //   onPressed: () async {
+                          //     setState(() {
+                          //       _model.webUrl =
+                          //           'https://21stfloor.github.io/UnifiedAssist/';
+                          //     });
+                          //   },
+                          // ),
                         ],
                       ),
                     ),

@@ -4,6 +4,10 @@ import 'home_page_widget.dart' show HomePageWidget;
 import 'package:flutter/material.dart';
 
 class HomePageModel extends FlutterFlowModel<HomePageWidget> {
+  ///  Local state fields for this page.
+
+  String webUrl = 'https://21stfloor.github.io/UnifiedAssist/';
+
   ///  State fields for stateful widgets in this page.
 
   final unfocusNode = FocusNode();
