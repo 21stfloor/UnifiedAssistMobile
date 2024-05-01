@@ -136,6 +136,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: 'LanguagePage',
           path: '/languagePage',
           builder: (context, params) => const LanguagePageWidget(),
+        ),
+        FFRoute(
+          name: 'MapView',
+          path: '/mapView',
+          builder: (context, params) => const MapViewWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );

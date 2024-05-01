@@ -11,3 +11,4 @@ export '/pages/obstacle_page/obstacle_page_widget.dart' show ObstaclePageWidget;
 export '/pages/documents_page/documents_page_widget.dart'
     show DocumentsPageWidget;
 export '/pages/language_page/language_page_widget.dart' show LanguagePageWidget;
+export '/pages/map_view/map_view_widget.dart' show MapViewWidget;

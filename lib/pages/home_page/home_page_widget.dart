@@ -1,13 +1,15 @@
 import '/components/appbar/appbar_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_toggle_icon.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_web_view.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter/services.dart';
 import 'home_page_model.dart';
 export 'home_page_model.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class HomePageWidget extends StatefulWidget {
   const HomePageWidget({super.key});
@@ -20,11 +22,38 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   late HomePageModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  static const _volumeBtnChannel =
+  MethodChannel("mychannel");
+  int pressCount = 0;
+  final audioPlayer = AudioPlayer();
 
   @override
   void initState() {
     super.initState();
     _model = createModel(context, () => HomePageModel());
+    _volumeBtnChannel.setMethodCallHandler((call) {
+      if (call.method == "volumeBtnPressed") {
+        if (call.arguments == "volume_down" && _model.alarmState) {
+          setState(() {
+            pressCount++;
+          });
+          if(pressCount >= 3) {
+            setState(() {
+              pressCount = 0;
+            });
+            playLoudAudio();
+          }
+        }
+      }
+
+      return Future.value(null);
+    });
+  }
+
+  playLoudAudio() async {
+    const url = "audios/mixkit-alert-alarm-1005.wav"; // You can use either a local file or a URL
+
+    await audioPlayer.play(AssetSource(url), volume: 1.0); // Set volume to 1.0 for maximum loudness
   }
 
   @override
@@ -76,7 +105,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                             highlightColor: Colors.transparent,
                             onTap: () async {
                               await _model.pageViewController?.animateToPage(
-                                0,
+                                1,
                                 duration: const Duration(milliseconds: 500),
                                 curve: Curves.ease,
                               );
@@ -108,13 +137,13 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                               highlightColor: Colors.transparent,
                               onTap: () async {
                                 await _model.pageViewController?.animateToPage(
-                                  1,
+                                  0,
                                   duration: const Duration(milliseconds: 500),
                                   curve: Curves.ease,
                                 );
                               },
                               child: Text(
-                                'Safety Security',
+                                'Safety and\nSecurity',
                                 style: FlutterFlowTheme.of(context)
                                     .bodyMedium
                                     .override(
@@ -226,6 +255,14 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                           .primaryText,
                                     ),
                                   ),
+                                  child: InkWell(
+                                    splashColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () async {
+                                      context.pushNamed('MapView');
+                                    },
                                   child: Column(
                                     mainAxisSize: MainAxisSize.max,
                                     mainAxisAlignment:
@@ -259,67 +296,105 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     ],
                                   ),
                                 ),
+                                ),
                               ),
                               Align(
                                 alignment: const AlignmentDirectional(-0.9, -0.8),
-                                child: Container(
-                                  width: 140.0,
-                                  height: 120.0,
-                                  decoration: BoxDecoration(
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        blurRadius: 4.0,
-                                        color: Color(0x33000000),
-                                        offset: Offset(
-                                          5.0,
-                                          5.0,
-                                        ),
-                                        spreadRadius: 2.0,
-                                      )
-                                    ],
-                                    border: Border.all(
+                                child: InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () async {
+                                    PowerButtonListener.startListening(() {
+                                      // Code to execute when power button is pressed
+                                      print('Power button pressed');
+                                    });
+                                  },
+                                  child: Container(
+                                    width: 140,
+                                    height: 120,
+                                    decoration: BoxDecoration(
                                       color: FlutterFlowTheme.of(context)
-                                          .primaryText,
+                                          .secondaryBackground,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          blurRadius: 4,
+                                          color: Color(0x33000000),
+                                          offset: Offset(
+                                            5,
+                                            5,
+                                          ),
+                                          spreadRadius: 2,
+                                        )
+                                      ],
+                                      border: Border.all(
+                                        color: FlutterFlowTheme.of(context)
+                                            .primaryText,
+                                      ),
                                     ),
-                                  ),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                        child: Image.asset(
-                                          'assets/images/433042209_973784761034372_18260664705326181_n.jpg',
-                                          width: 76.0,
-                                          height: 69.0,
-                                          fit: BoxFit.cover,
+                                    child: Stack(
+                                      children: [
+                                        Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                          child: Image.asset(
+                                            'assets/images/433042209_973784761034372_18260664705326181_n.jpg',
+                                                width: 76.0,
+                                                height: 69.0,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
-                                      ),
-                                      Align(
-                                        alignment:
-                                            const AlignmentDirectional(0.0, 0.0),
-                                        child: Text(
-                                          'Alarm Generation',
-                                          textAlign: TextAlign.center,
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Inter',
-                                                fontSize: 18.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight: FontWeight.bold,
+                                        Align(
+                                              alignment: const AlignmentDirectional(
+                                                  0.0, 0.0),
+                                          child: Text(
+                                            'Alarm Generation',
+                                            textAlign: TextAlign.center,
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                              fontFamily: 'Inter',
+                                                          fontSize: 18.0,
+                                                          letterSpacing: 0.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
                                               ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                    ],
+                                        ToggleIcon(
+                                          onPressed: () async {
+                                            setState(() => _model.alarmState =
+                                                !_model.alarmState);
+                                          },
+                                          value: _model.alarmState,
+                                          onIcon: Icon(
+                                            Icons.check_box,
+                                            color: FlutterFlowTheme.of(context)
+                                                .primary,
+                                            size: 25.0,
+                                            ),
+                                          offIcon: Icon(
+                                            Icons.check_box_outline_blank,
+                                            color: FlutterFlowTheme.of(context)
+                                                .secondaryText,
+                                            size: 25.0,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ],
+                              ],
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.max,
@@ -735,5 +810,19 @@ class _HomePageWidgetState extends State<HomePageWidget> {
         ),
       ),
     );
+  }
+}
+
+
+class PowerButtonListener {
+  static const MethodChannel _channel = MethodChannel('com.thesis.unifiedassist');
+
+  static Future<void> startListening(Function() onPowerButtonPressed) async {
+    _channel.setMethodCallHandler((call) async {
+      print('Is this powerbutton?');
+      if (call.method == 'onPowerButtonPressed') {
+        onPowerButtonPressed();
+      }
+    });
   }
 }
