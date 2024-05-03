@@ -1,3 +1,4 @@
+import '../base.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_static_map.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -7,14 +8,14 @@ import 'package:flutter/material.dart';
 import 'map_view_model.dart';
 export 'map_view_model.dart';
 
-class MapViewWidget extends StatefulWidget {
+class MapViewWidget extends BasePage {
   const MapViewWidget({super.key});
 
   @override
   State<MapViewWidget> createState() => _MapViewWidgetState();
 }
 
-class _MapViewWidgetState extends State<MapViewWidget> {
+class _MapViewWidgetState extends BasePageState<MapViewWidget> {
   late MapViewModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();

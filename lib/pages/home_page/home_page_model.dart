@@ -8,8 +8,6 @@ class HomePageModel extends FlutterFlowModel<HomePageWidget> {
 
   String webUrl = 'https://21stfloor.github.io/UnifiedAssist/';
 
-  bool alarmState = true;
-
   ///  State fields for stateful widgets in this page.
 
   final unfocusNode = FocusNode();

@@ -73,7 +73,7 @@ dependencies:
   pointer_interceptor: 0.10.1
   provider: 6.0.5
   rxdart: 0.27.7
-  shared_preferences: 2.2.2
+  shared_preferences: ^2.2.2
   shared_preferences_android: 2.2.1
   shared_preferences_foundation: 2.3.4
   shared_preferences_platform_interface: 2.3.1
@@ -109,6 +109,9 @@ dependencies:
   flutter_scalable_ocr: ^2.0.0
   docx_to_text: ^1.0.1
   contacts_service: ^0.6.3
+  volume_watcher: ^2.0.1
+  flutter_sms: 2.3.3
+  permission_handler: ^11.3.1
 
 dependency_overrides:
   http: 1.2.0

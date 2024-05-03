@@ -1,3 +1,7 @@
+import 'package:contacts_service/contacts_service.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import '../base.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -9,17 +13,18 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 's_o_spage_model.dart';
 export 's_o_spage_model.dart';
 
-class SOSpageWidget extends StatefulWidget {
+class SOSpageWidget extends BasePage {
   const SOSpageWidget({super.key});
 
   @override
   State<SOSpageWidget> createState() => _SOSpageWidgetState();
 }
 
-class _SOSpageWidgetState extends State<SOSpageWidget> {
+class _SOSpageWidgetState extends BasePageState<SOSpageWidget> {
   late SOSpageModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  Contact? contact;
 
   @override
   void initState() {
@@ -306,10 +311,30 @@ class _SOSpageWidgetState extends State<SOSpageWidget> {
                                     FlutterFlowTheme.of(context).primaryText,
                                   ),
                                 ),
-                                child: Icon(
-                                  Icons.perm_contact_cal_outlined,
-                                  color: FlutterFlowTheme.of(context).primaryText,
-                                  size: 35.0,
+                                child: InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () async {
+                                    var allowed = await _askPermissions();
+                                    if(allowed){
+                                      try {
+                                        setState(() async {
+                                          contact = await ContactsService.openDeviceContactPicker();
+                                          _model.textController.text = removeCountryCodeAndLeadingZero(contact!.phones![0].value!);
+                                        });
+                                      } catch (e) {
+                                        print(e.toString());
+                                      }
+                                    }
+                                  },
+                                  child: Icon(
+                                    Icons.perm_contact_cal_outlined,
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryText,
+                                    size: 35,
+                                  ),
                                 ),
                               ),
                             ],
@@ -493,7 +518,11 @@ class _SOSpageWidgetState extends State<SOSpageWidget> {
                           const EdgeInsetsDirectional.fromSTEB(0.0, 50.0, 0.0, 0.0),
                           child: FFButtonWidget(
                             onPressed: () async {
-                              context.pushNamed('FriendsPage');
+                              if(contact != null) {
+                                context.pushNamed('FriendsPage');
+                              }
+                              else{
+                              }
                             },
                             text: 'ADD SOS CONTACT',
                             options: FFButtonOptions(
@@ -531,4 +560,54 @@ class _SOSpageWidgetState extends State<SOSpageWidget> {
       ),
     );
   }
+
+  Future<bool> _askPermissions() async {
+    PermissionStatus permissionStatus = await _getContactPermission();
+    if (permissionStatus == PermissionStatus.granted) {
+      return true;
+    } else {
+      _handleInvalidPermissions(permissionStatus);
+    }
+
+    return false;
+  }
+
+  Future<PermissionStatus> _getContactPermission() async {
+    PermissionStatus permission = await Permission.contacts.status;
+    if (permission != PermissionStatus.granted &&
+        permission != PermissionStatus.permanentlyDenied) {
+      PermissionStatus permissionStatus = await Permission.contacts.request();
+      return permissionStatus;
+    } else {
+      return permission;
+    }
+  }
+
+  void _handleInvalidPermissions(PermissionStatus permissionStatus) {
+    if (permissionStatus == PermissionStatus.denied) {
+      final snackBar = SnackBar(content: Text('Access to contact data denied'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else if (permissionStatus == PermissionStatus.permanentlyDenied) {
+      final snackBar =
+      SnackBar(content: Text('Contact data not available on device'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+}
+
+
+String removeCountryCodeAndLeadingZero(String phoneNumber) {
+  // Remove any non-digit characters
+  String digitsOnly = phoneNumber.replaceAll(RegExp(r'\D+'), '');
+
+  // Check if the number starts with a country code
+  if (digitsOnly.startsWith('63')) {
+    // Remove the leading '63' country code
+    digitsOnly = digitsOnly.substring(2);
+  }
+
+  // Remove any leading zeros
+  digitsOnly = digitsOnly.replaceFirst(RegExp('^0+'), '');
+
+  return digitsOnly;
 }

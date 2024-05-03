@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:http/http.dart' as http;
+import '../base.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -15,14 +16,14 @@ export 'text_page_model.dart';
 import 'dart:convert';
 import 'package:flutter_scalable_ocr/flutter_scalable_ocr.dart';
 
-class TextPageWidget extends StatefulWidget {
+class TextPageWidget extends BasePage {
   const TextPageWidget({super.key});
 
   @override
   State<TextPageWidget> createState() => _TextPageWidgetState();
 }
 
-class _TextPageWidgetState extends State<TextPageWidget> {
+class _TextPageWidgetState extends BasePageState<TextPageWidget> {
   late TextPageModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();

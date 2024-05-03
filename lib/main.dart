@@ -5,7 +5,7 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'auth/firebase_auth/firebase_user_provider.dart';
 import 'auth/firebase_auth/auth_util.dart';
-
+import 'package:volume_watcher/volume_watcher.dart';
 import 'backend/firebase/firebase_config.dart';
 import 'flutter_flow/flutter_flow_theme.dart';
 import 'flutter_flow/flutter_flow_util.dart';
@@ -67,6 +67,7 @@ class _MyAppState extends State<MyApp> {
       const Duration(milliseconds: 1000),
       () => _appStateNotifier.stopShowingSplashImage(),
     );
+
   }
 
 

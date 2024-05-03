@@ -1,3 +1,4 @@
+import '../base.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_radio_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -7,14 +8,14 @@ import 'package:flutter/material.dart';
 import 'language_page_model.dart';
 export 'language_page_model.dart';
 
-class LanguagePageWidget extends StatefulWidget {
+class LanguagePageWidget extends BasePage {
   const LanguagePageWidget({super.key});
 
   @override
   State<LanguagePageWidget> createState() => _LanguagePageWidgetState();
 }
 
-class _LanguagePageWidgetState extends State<LanguagePageWidget> {
+class _LanguagePageWidgetState extends BasePageState<LanguagePageWidget> {
   late LanguagePageModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();

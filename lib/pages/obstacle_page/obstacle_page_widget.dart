@@ -2,6 +2,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../backend/schema/regions_detection.dart';
+import '../base.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -17,14 +18,14 @@ import 'dart:convert' as convert;
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:camera_platform_interface/camera_platform_interface.dart';
 
-class ObstaclePageWidget extends StatefulWidget {
+class ObstaclePageWidget extends BasePage {
   const ObstaclePageWidget({super.key});
 
   @override
   State<ObstaclePageWidget> createState() => _ObstaclePageWidgetState();
 }
 
-class _ObstaclePageWidgetState extends State<ObstaclePageWidget> {
+class _ObstaclePageWidgetState extends BasePageState<ObstaclePageWidget> {
   late ObstaclePageModel _model;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   CameraController? controller;

@@ -1,3 +1,4 @@
+import '../base.dart';
 import '/flutter_flow/flutter_flow_button_tabbar.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -7,14 +8,14 @@ import 'package:flutter/material.dart';
 import 'friends_page_model.dart';
 export 'friends_page_model.dart';
 
-class FriendsPageWidget extends StatefulWidget {
+class FriendsPageWidget extends BasePage {
   const FriendsPageWidget({super.key});
 
   @override
   State<FriendsPageWidget> createState() => _FriendsPageWidgetState();
 }
 
-class _FriendsPageWidgetState extends State<FriendsPageWidget>
+class _FriendsPageWidgetState extends BasePageState<FriendsPageWidget>
     with TickerProviderStateMixin {
   late FriendsPageModel _model;
 

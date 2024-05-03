@@ -4,6 +4,7 @@ import 'package:docx_to_text/docx_to_text.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:just_audio/just_audio.dart';
+import '../base.dart';
 import '../text_page/text_page_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -15,14 +16,14 @@ export 'documents_page_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class DocumentsPageWidget extends StatefulWidget {
+class DocumentsPageWidget extends BasePage {
   const DocumentsPageWidget({super.key});
 
   @override
   State<DocumentsPageWidget> createState() => _DocumentsPageWidgetState();
 }
 
-class _DocumentsPageWidgetState extends State<DocumentsPageWidget> {
+class _DocumentsPageWidgetState extends BasePageState<DocumentsPageWidget> {
   late DocumentsPageModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();

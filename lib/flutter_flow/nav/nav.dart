@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../pages/contacts_list_page.dart';
 import '/auth/base_auth_user_provider.dart';
 
 import '/index.dart';
@@ -141,7 +142,13 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: 'MapView',
           path: '/mapView',
           builder: (context, params) => const MapViewWidget(),
-        )
+        ),
+        FFRoute(
+          name: 'ContactListPage',
+          path: '/contactListPage',
+          requireAuth: true,
+          builder: (context, params) => ContactPickerPage(),
+        ),
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
 

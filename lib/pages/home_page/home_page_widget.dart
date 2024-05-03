@@ -1,5 +1,11 @@
+import 'dart:async';
+
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../base.dart';
+import '../sms_functions.dart';
 import '/components/appbar/appbar_widget.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_toggle_icon.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -10,51 +16,28 @@ import 'package:flutter/services.dart';
 import 'home_page_model.dart';
 export 'home_page_model.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_sms/flutter_sms.dart';
 
-class HomePageWidget extends StatefulWidget {
+class HomePageWidget extends BasePage {
   const HomePageWidget({super.key});
 
   @override
-  State<HomePageWidget> createState() => _HomePageWidgetState();
+  State<BasePage> createState() => _HomePageWidgetState();
+
 }
 
-class _HomePageWidgetState extends State<HomePageWidget> {
+class _HomePageWidgetState extends BasePageState<HomePageWidget> {
   late HomePageModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  static const _volumeBtnChannel =
-  MethodChannel("mychannel");
-  int pressCount = 0;
-  final audioPlayer = AudioPlayer();
 
   @override
   void initState() {
     super.initState();
     _model = createModel(context, () => HomePageModel());
-    _volumeBtnChannel.setMethodCallHandler((call) {
-      if (call.method == "volumeBtnPressed") {
-        if (call.arguments == "volume_down" && _model.alarmState) {
-          setState(() {
-            pressCount++;
-          });
-          if(pressCount >= 3) {
-            setState(() {
-              pressCount = 0;
-            });
-            playLoudAudio();
-          }
-        }
-      }
-
-      return Future.value(null);
-    });
   }
 
-  playLoudAudio() async {
-    const url = "audios/mixkit-alert-alarm-1005.wav"; // You can use either a local file or a URL
 
-    await audioPlayer.play(AssetSource(url), volume: 1.0); // Set volume to 1.0 for maximum loudness
-  }
 
   @override
   void dispose() {
@@ -306,10 +289,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                   hoverColor: Colors.transparent,
                                   highlightColor: Colors.transparent,
                                   onTap: () async {
-                                    PowerButtonListener.startListening(() {
-                                      // Code to execute when power button is pressed
-                                      print('Power button pressed');
-                                    });
                                   },
                                   child: Container(
                                     width: 140,
@@ -317,7 +296,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     decoration: BoxDecoration(
                                       color: FlutterFlowTheme.of(context)
                                           .secondaryBackground,
-                                      boxShadow: [
+                                      boxShadow: const [
                                         BoxShadow(
                                           blurRadius: 4,
                                           color: Color(0x33000000),
@@ -372,10 +351,12 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                         ),
                                         ToggleIcon(
                                           onPressed: () async {
-                                            setState(() => _model.alarmState =
-                                                !_model.alarmState);
+                                            setState(() => alarmState =
+                                                !alarmState);
+                                            final SharedPreferences prefs = await preferences;
+                                            prefs.setBool("alarmState", alarmState);
                                           },
-                                          value: _model.alarmState,
+                                          value: alarmState,
                                           onIcon: Icon(
                                             Icons.check_box,
                                             color: FlutterFlowTheme.of(context)
@@ -814,15 +795,3 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 }
 
 
-class PowerButtonListener {
-  static const MethodChannel _channel = MethodChannel('com.thesis.unifiedassist');
-
-  static Future<void> startListening(Function() onPowerButtonPressed) async {
-    _channel.setMethodCallHandler((call) async {
-      print('Is this powerbutton?');
-      if (call.method == 'onPowerButtonPressed') {
-        onPowerButtonPressed();
-      }
-    });
-  }
-}
