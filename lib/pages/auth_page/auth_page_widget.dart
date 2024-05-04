@@ -1,3 +1,4 @@
+import '../s_o_spage/s_o_spage_widget.dart';
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/components/terms_and_conditions/terms_and_conditions_widget.dart';
@@ -7,6 +8,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 import 'auth_page_model.dart';
@@ -30,75 +32,7 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final animationsMap = {
-    'containerOnPageLoadAnimation': AnimationInfo(
-      trigger: AnimationTrigger.onPageLoad,
-      effects: [
-        VisibilityEffect(duration: 1.ms),
-        FadeEffect(
-          curve: Curves.easeInOut,
-          delay: 0.ms,
-          duration: 400.ms,
-          begin: 0.0,
-          end: 1.0,
-        ),
-        MoveEffect(
-          curve: Curves.easeInOut,
-          delay: 0.ms,
-          duration: 400.ms,
-          begin: const Offset(0.0, 80.0),
-          end: const Offset(0.0, 0.0),
-        ),
-        ScaleEffect(
-          curve: Curves.easeInOut,
-          delay: 150.ms,
-          duration: 400.ms,
-          begin: const Offset(0.8, 0.8),
-          end: const Offset(1.0, 1.0),
-        ),
-      ],
-    ),
-    'columnOnPageLoadAnimation1': AnimationInfo(
-      trigger: AnimationTrigger.onPageLoad,
-      effects: [
-        VisibilityEffect(duration: 300.ms),
-        FadeEffect(
-          curve: Curves.easeInOut,
-          delay: 300.ms,
-          duration: 400.ms,
-          begin: 0.0,
-          end: 1.0,
-        ),
-        MoveEffect(
-          curve: Curves.easeInOut,
-          delay: 300.ms,
-          duration: 400.ms,
-          begin: const Offset(0.0, 20.0),
-          end: const Offset(0.0, 0.0),
-        ),
-      ],
-    ),
-    'columnOnPageLoadAnimation2': AnimationInfo(
-      trigger: AnimationTrigger.onPageLoad,
-      effects: [
-        VisibilityEffect(duration: 300.ms),
-        FadeEffect(
-          curve: Curves.easeInOut,
-          delay: 300.ms,
-          duration: 400.ms,
-          begin: 0.0,
-          end: 1.0,
-        ),
-        MoveEffect(
-          curve: Curves.easeInOut,
-          delay: 300.ms,
-          duration: 400.ms,
-          begin: const Offset(0.0, 20.0),
-          end: const Offset(0.0, 0.0),
-        ),
-      ],
-    ),
-  };
+  final animationsMap = <String, AnimationInfo>{};
 
   @override
   void initState() {
@@ -121,20 +55,96 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
       length: 2,
       initialIndex: 0,
     )..addListener(() => setState(() {}));
-    _model.registerEmailAddressController ??= TextEditingController();
+    _model.registerEmailAddressTextController ??= TextEditingController();
     _model.registerEmailAddressFocusNode ??= FocusNode();
 
-    _model.registerPasswordController ??= TextEditingController();
+    _model.fullNameTextController ??= TextEditingController();
+    _model.fullNameFocusNode ??= FocusNode();
+
+    _model.phoneNumberTextController ??= TextEditingController();
+    _model.phoneNumberFocusNode ??= FocusNode();
+
+    _model.registerPasswordTextController ??= TextEditingController();
     _model.registerPasswordFocusNode ??= FocusNode();
 
-    _model.confirmPasswordController ??= TextEditingController();
+    _model.confirmPasswordTextController ??= TextEditingController();
     _model.confirmPasswordFocusNode ??= FocusNode();
 
-    _model.emailAddressController ??= TextEditingController();
+    _model.emailAddressTextController ??= TextEditingController();
     _model.emailAddressFocusNode ??= FocusNode();
 
-    _model.passwordController ??= TextEditingController();
+    _model.passwordTextController ??= TextEditingController();
     _model.passwordFocusNode ??= FocusNode();
+
+    animationsMap.addAll({
+    'containerOnPageLoadAnimation': AnimationInfo(
+      trigger: AnimationTrigger.onPageLoad,
+        effectsBuilder: () => [
+        VisibilityEffect(duration: 1.ms),
+        FadeEffect(
+          curve: Curves.easeInOut,
+            delay: 0.0.ms,
+            duration: 400.0.ms,
+          begin: 0.0,
+          end: 1.0,
+        ),
+        MoveEffect(
+          curve: Curves.easeInOut,
+            delay: 0.0.ms,
+            duration: 400.0.ms,
+          begin: const Offset(0.0, 80.0),
+          end: const Offset(0.0, 0.0),
+        ),
+        ScaleEffect(
+          curve: Curves.easeInOut,
+            delay: 150.0.ms,
+            duration: 400.0.ms,
+          begin: const Offset(0.8, 0.8),
+          end: const Offset(1.0, 1.0),
+        ),
+      ],
+    ),
+    'columnOnPageLoadAnimation1': AnimationInfo(
+      trigger: AnimationTrigger.onPageLoad,
+        effectsBuilder: () => [
+        VisibilityEffect(duration: 300.ms),
+        FadeEffect(
+          curve: Curves.easeInOut,
+            delay: 300.0.ms,
+            duration: 400.0.ms,
+          begin: 0.0,
+          end: 1.0,
+        ),
+        MoveEffect(
+          curve: Curves.easeInOut,
+            delay: 300.0.ms,
+            duration: 400.0.ms,
+          begin: const Offset(0.0, 20.0),
+          end: const Offset(0.0, 0.0),
+        ),
+      ],
+    ),
+    'columnOnPageLoadAnimation2': AnimationInfo(
+      trigger: AnimationTrigger.onPageLoad,
+        effectsBuilder: () => [
+        VisibilityEffect(duration: 300.ms),
+        FadeEffect(
+          curve: Curves.easeInOut,
+            delay: 300.0.ms,
+            duration: 400.0.ms,
+          begin: 0.0,
+          end: 1.0,
+        ),
+        MoveEffect(
+          curve: Curves.easeInOut,
+            delay: 300.0.ms,
+            duration: 400.0.ms,
+          begin: const Offset(0.0, 20.0),
+          end: const Offset(0.0, 0.0),
+        ),
+      ],
+    ),
+      });
   }
 
   @override
@@ -340,7 +350,7 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                                               double.infinity,
                                                           child: TextFormField(
                                                             controller: _model
-                                                                .registerEmailAddressController,
+                                                                .registerEmailAddressTextController,
                                                             focusNode: _model
                                                                 .registerEmailAddressFocusNode,
                                                             autofocus: true,
@@ -441,7 +451,7 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                                                 TextInputType
                                                                     .emailAddress,
                                                             validator: _model
-                                                                .registerEmailAddressControllerValidator
+                                                                .registerEmailAddressTextControllerValidator
                                                                 .asValidator(
                                                                     context),
                                                           ),
@@ -460,7 +470,256 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                                               double.infinity,
                                                           child: TextFormField(
                                                             controller: _model
-                                                                .registerPasswordController,
+                                                                .fullNameTextController,
+                                                            focusNode: _model
+                                                                .fullNameFocusNode,
+                                                            autofocus: true,
+                                                            autofillHints: const [
+                                                              AutofillHints
+                                                                  .password
+                                                            ],
+                                                            textInputAction:
+                                                                TextInputAction
+                                                                    .next,
+                                                            obscureText: false,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              labelText:
+                                                                  'Full Name',
+                                                              labelStyle:
+                                                                  FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .labelLarge
+                                                                      .override(
+                                                                        fontFamily:
+                                                                            'Inter',
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                      ),
+                                                              enabledBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide:
+                                                                    BorderSide(
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .primary,
+                                                                  width: 2.0,
+                                                                ),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            6.0),
+                                                              ),
+                                                              focusedBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide:
+                                                                    BorderSide(
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .primary,
+                                                                  width: 2.0,
+                                                                ),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            6.0),
+                                                              ),
+                                                              errorBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide:
+                                                                    BorderSide(
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .error,
+                                                                  width: 2.0,
+                                                                ),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            6.0),
+                                                              ),
+                                                              focusedErrorBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide:
+                                                                    BorderSide(
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .error,
+                                                                  width: 2.0,
+                                                                ),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            6.0),
+                                                              ),
+                                                              filled: true,
+                                                              fillColor: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .secondaryBackground,
+                                                              contentPadding:
+                                                                  const EdgeInsets
+                                                                      .all(
+                                                                          24.0),
+                                                            ),
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .bodyLarge
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Inter',
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                ),
+                                                            validator: _model
+                                                                .fullNameTextControllerValidator
+                                                                .asValidator(
+                                                                    context),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsetsDirectional
+                                                                .fromSTEB(
+                                                                    0.0,
+                                                                    0.0,
+                                                                    0.0,
+                                                                    16.0),
+                                                        child: SizedBox(
+                                                          width:
+                                                              double.infinity,
+                                                          child: TextFormField(
+                                                            controller: _model
+                                                                .phoneNumberTextController,
+                                                            focusNode: _model
+                                                                .phoneNumberFocusNode,
+                                                            autofocus: true,
+                                                            autofillHints: const [
+                                                              AutofillHints
+                                                                  .password
+                                                            ],
+                                                            textInputAction:
+                                                                TextInputAction
+                                                                    .next,
+                                                            obscureText: false,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              labelText:
+                                                                  'Phone Number',
+                                                              labelStyle:
+                                                                  FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .labelLarge
+                                                                      .override(
+                                                                        fontFamily:
+                                                                            'Inter',
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                      ),
+                                                              hintText:
+                                                                  '09xxxxxxxxx',
+                                                              enabledBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide:
+                                                                    BorderSide(
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .primary,
+                                                                  width: 2.0,
+                                                                ),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            6.0),
+                                                              ),
+                                                              focusedBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide:
+                                                                    BorderSide(
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .primary,
+                                                                  width: 2.0,
+                                                                ),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            6.0),
+                                                              ),
+                                                              errorBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide:
+                                                                    BorderSide(
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .error,
+                                                                  width: 2.0,
+                                                                ),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            6.0),
+                                                              ),
+                                                              focusedErrorBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide:
+                                                                    BorderSide(
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .error,
+                                                                  width: 2.0,
+                                                                ),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            6.0),
+                                                              ),
+                                                              filled: true,
+                                                              fillColor: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .secondaryBackground,
+                                                              contentPadding:
+                                                                  const EdgeInsets
+                                                                      .all(
+                                                                          24.0),
+                                                            ),
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .bodyLarge
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Inter',
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                ),
+                                                            maxLength: 11,
+                                                            maxLengthEnforcement:
+                                                                MaxLengthEnforcement
+                                                                    .enforced,
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .phone,
+                                                            validator: _model
+                                                                .phoneNumberTextControllerValidator
+                                                                .asValidator(
+                                                                    context),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsetsDirectional
+                                                                .fromSTEB(
+                                                                    0.0,
+                                                                    0.0,
+                                                                    0.0,
+                                                                    16.0),
+                                                        child: SizedBox(
+                                                          width:
+                                                              double.infinity,
+                                                          child: TextFormField(
+                                                            controller: _model
+                                                                .registerPasswordTextController,
                                                             focusNode: _model
                                                                 .registerPasswordFocusNode,
                                                             autofocus: true,
@@ -583,7 +842,7 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                                                       0.0,
                                                                 ),
                                                             validator: _model
-                                                                .registerPasswordControllerValidator
+                                                                .registerPasswordTextControllerValidator
                                                                 .asValidator(
                                                                     context),
                                                           ),
@@ -602,7 +861,7 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                                               double.infinity,
                                                           child: TextFormField(
                                                             controller: _model
-                                                                .confirmPasswordController,
+                                                                .confirmPasswordTextController,
                                                             focusNode: _model
                                                                 .confirmPasswordFocusNode,
                                                             autofocus: true,
@@ -725,7 +984,7 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                                                       0.0,
                                                                 ),
                                                             validator: _model
-                                                                .confirmPasswordControllerValidator
+                                                                .confirmPasswordTextControllerValidator
                                                                 .asValidator(
                                                                     context),
                                                           ),
@@ -746,6 +1005,8 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                                           child: FFButtonWidget(
                                                             onPressed:
                                                                 () async {
+                                                              var shouldSetState =
+                                                                  false;
                                                               if (_model.formKey2
                                                                           .currentState ==
                                                                       null ||
@@ -755,14 +1016,32 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                                                       .validate()) {
                                                                 return;
                                                               }
+                                                              _model.existingPhoneUserCount =
+                                                                  await queryUsersRecordCount(
+                                                                queryBuilder:
+                                                                    (usersRecord) =>
+                                                                        usersRecord
+                                                                            .where(
+                                                                  'phone_number',
+                                                                  isEqualTo:
+                                                                    removeCountryCodeAndLeadingZero(_model
+                                                                      .phoneNumberTextController
+                                                                      .text),
+                                                                ),
+                                                              );
+                                                              shouldSetState =
+                                                                  true;
+                                                              if (_model
+                                                                      .existingPhoneUserCount! >
+                                                                  0) {
                                                               GoRouter.of(
                                                                       context)
                                                                   .prepareAuthEvent();
                                                               if (_model
-                                                                      .registerPasswordController
+                                                                      .registerPasswordTextController
                                                                       .text !=
                                                                   _model
-                                                                      .confirmPasswordController
+                                                                      .confirmPasswordTextController
                                                                       .text) {
                                                                 ScaffoldMessenger.of(
                                                                         context)
@@ -782,10 +1061,10 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                                                       .createAccountWithEmail(
                                                                 context,
                                                                 _model
-                                                                    .registerEmailAddressController
+                                                                    .registerEmailAddressTextController
                                                                     .text,
                                                                 _model
-                                                                    .registerPasswordController
+                                                                    .registerPasswordTextController
                                                                     .text,
                                                               );
                                                               if (user ==
@@ -795,18 +1074,67 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
 
                                                               await UsersRecord
                                                                   .collection
-                                                                  .doc(user.uid)
+                                                                    .doc(user
+                                                                        .uid)
                                                                   .update(
                                                                       createUsersRecordData(
                                                                     email: _model
-                                                                        .registerEmailAddressController
+                                                                        .registerEmailAddressTextController
                                                                         .text,
+                                                                      displayName: _model
+                                                                            .fullNameTextController
+                                                                            .text,
+                                                                    phoneNumber:
+                                                                      removeCountryCodeAndLeadingZero(_model
+                                                                            .phoneNumberTextController
+                                                                        .text),
                                                                   ));
 
                                                               context.pushNamedAuth(
                                                                   'HomePage',
                                                                   context
                                                                       .mounted);
+
+                                                                if (shouldSetState) {
+                                                                  setState(
+                                                                      () {});
+                                                                }
+                                                                return;
+                                                              } else {
+                                                                await showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (alertDialogContext) {
+                                                                    return WebViewAware(
+                                                                      child:
+                                                                          AlertDialog(
+                                                                        title: const Text(
+                                                                            'Invalid'),
+                                                                        content:
+                                                                            const Text('Phone Number was already registered!'),
+                                                                        actions: [
+                                                                          TextButton(
+                                                                            onPressed: () =>
+                                                                                Navigator.pop(alertDialogContext),
+                                                                            child:
+                                                                                const Text('Ok'),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                );
+                                                                if (shouldSetState) {
+                                                                  setState(
+                                                                      () {});
+                                                                }
+                                                                return;
+                                                              }
+
+                                                              if (shouldSetState) {
+                                                                setState(() {});
+                                                              }
                                                             },
                                                             text: 'Get Started',
                                                             options:
@@ -1041,7 +1369,7 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                                               double.infinity,
                                                           child: TextFormField(
                                                             controller: _model
-                                                                .emailAddressController,
+                                                                .emailAddressTextController,
                                                             focusNode: _model
                                                                 .emailAddressFocusNode,
                                                             autofocus: true,
@@ -1145,7 +1473,7 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                                                 TextInputType
                                                                     .emailAddress,
                                                             validator: _model
-                                                                .emailAddressControllerValidator
+                                                                .emailAddressTextControllerValidator
                                                                 .asValidator(
                                                                     context),
                                                           ),
@@ -1164,7 +1492,7 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                                               double.infinity,
                                                           child: TextFormField(
                                                             controller: _model
-                                                                .passwordController,
+                                                                .passwordTextController,
                                                             focusNode: _model
                                                                 .passwordFocusNode,
                                                             autofocus: true,
@@ -1290,7 +1618,7 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                                                       0.0,
                                                                 ),
                                                             validator: _model
-                                                                .passwordControllerValidator
+                                                                .passwordTextControllerValidator
                                                                 .asValidator(
                                                                     context),
                                                           ),
@@ -1329,10 +1657,10 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                                                       .signInWithEmail(
                                                                 context,
                                                                 _model
-                                                                    .emailAddressController
+                                                                    .emailAddressTextController
                                                                     .text,
                                                                 _model
-                                                                    .passwordController
+                                                                    .passwordTextController
                                                                     .text,
                                                               );
                                                               if (user ==

@@ -1,8 +1,13 @@
+import '../base.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'friends_page_widget.dart' show FriendsPageWidget;
 import 'package:flutter/material.dart';
 
-class FriendsPageModel extends FlutterFlowModel<FriendsPageWidget> {
+class FriendsPageModel extends FlutterFlowModel<BasePage> {
+  ///  Local state fields for this page.
+
+  int pageIndex = 0;
+
   ///  State fields for stateful widgets in this page.
 
   final unfocusNode = FocusNode();

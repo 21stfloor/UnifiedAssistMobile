@@ -15,10 +15,10 @@ class AuthPageModel extends FlutterFlowModel<AuthPageWidget> {
 
   // State field(s) for registerEmailAddress widget.
   FocusNode? registerEmailAddressFocusNode;
-  TextEditingController? registerEmailAddressController;
+  TextEditingController? registerEmailAddressTextController;
   String? Function(BuildContext, String?)?
-      registerEmailAddressControllerValidator;
-  String? _registerEmailAddressControllerValidator(
+      registerEmailAddressTextControllerValidator;
+  String? _registerEmailAddressTextControllerValidator(
       BuildContext context, String? val) {
     if (val == null || val.isEmpty) {
       return 'Field is required';
@@ -30,12 +30,38 @@ class AuthPageModel extends FlutterFlowModel<AuthPageWidget> {
     return null;
   }
 
+  // State field(s) for fullName widget.
+  FocusNode? fullNameFocusNode;
+  TextEditingController? fullNameTextController;
+  String? Function(BuildContext, String?)? fullNameTextControllerValidator;
+  String? _fullNameTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Field is required';
+    }
+
+    return null;
+  }
+
+  // State field(s) for phoneNumber widget.
+  FocusNode? phoneNumberFocusNode;
+  TextEditingController? phoneNumberTextController;
+  String? Function(BuildContext, String?)? phoneNumberTextControllerValidator;
+  String? _phoneNumberTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Field is required';
+    }
+
+    return null;
+  }
+
   // State field(s) for registerPassword widget.
   FocusNode? registerPasswordFocusNode;
-  TextEditingController? registerPasswordController;
+  TextEditingController? registerPasswordTextController;
   late bool registerPasswordVisibility;
-  String? Function(BuildContext, String?)? registerPasswordControllerValidator;
-  String? _registerPasswordControllerValidator(
+  String? Function(BuildContext, String?)?
+      registerPasswordTextControllerValidator;
+  String? _registerPasswordTextControllerValidator(
       BuildContext context, String? val) {
     if (val == null || val.isEmpty) {
       return 'Field is required';
@@ -46,10 +72,11 @@ class AuthPageModel extends FlutterFlowModel<AuthPageWidget> {
 
   // State field(s) for confirmPassword widget.
   FocusNode? confirmPasswordFocusNode;
-  TextEditingController? confirmPasswordController;
+  TextEditingController? confirmPasswordTextController;
   late bool confirmPasswordVisibility;
-  String? Function(BuildContext, String?)? confirmPasswordControllerValidator;
-  String? _confirmPasswordControllerValidator(
+  String? Function(BuildContext, String?)?
+      confirmPasswordTextControllerValidator;
+  String? _confirmPasswordTextControllerValidator(
       BuildContext context, String? val) {
     if (val == null || val.isEmpty) {
       return 'Field is required';
@@ -58,11 +85,14 @@ class AuthPageModel extends FlutterFlowModel<AuthPageWidget> {
     return null;
   }
 
+  // Stores action output result for [Firestore Query - Query a collection] action in Button widget.
+  int? existingPhoneUserCount;
   // State field(s) for emailAddress widget.
   FocusNode? emailAddressFocusNode;
-  TextEditingController? emailAddressController;
-  String? Function(BuildContext, String?)? emailAddressControllerValidator;
-  String? _emailAddressControllerValidator(BuildContext context, String? val) {
+  TextEditingController? emailAddressTextController;
+  String? Function(BuildContext, String?)? emailAddressTextControllerValidator;
+  String? _emailAddressTextControllerValidator(
+      BuildContext context, String? val) {
     if (val == null || val.isEmpty) {
       return 'Field is required';
     }
@@ -75,10 +105,10 @@ class AuthPageModel extends FlutterFlowModel<AuthPageWidget> {
 
   // State field(s) for password widget.
   FocusNode? passwordFocusNode;
-  TextEditingController? passwordController;
+  TextEditingController? passwordTextController;
   late bool passwordVisibility;
-  String? Function(BuildContext, String?)? passwordControllerValidator;
-  String? _passwordControllerValidator(BuildContext context, String? val) {
+  String? Function(BuildContext, String?)? passwordTextControllerValidator;
+  String? _passwordTextControllerValidator(BuildContext context, String? val) {
     if (val == null || val.isEmpty) {
       return 'Field is required';
     }
@@ -88,15 +118,19 @@ class AuthPageModel extends FlutterFlowModel<AuthPageWidget> {
 
   @override
   void initState(BuildContext context) {
-    registerEmailAddressControllerValidator =
-        _registerEmailAddressControllerValidator;
+    registerEmailAddressTextControllerValidator =
+        _registerEmailAddressTextControllerValidator;
+    fullNameTextControllerValidator = _fullNameTextControllerValidator;
+    phoneNumberTextControllerValidator = _phoneNumberTextControllerValidator;
     registerPasswordVisibility = false;
-    registerPasswordControllerValidator = _registerPasswordControllerValidator;
+    registerPasswordTextControllerValidator =
+        _registerPasswordTextControllerValidator;
     confirmPasswordVisibility = false;
-    confirmPasswordControllerValidator = _confirmPasswordControllerValidator;
-    emailAddressControllerValidator = _emailAddressControllerValidator;
+    confirmPasswordTextControllerValidator =
+        _confirmPasswordTextControllerValidator;
+    emailAddressTextControllerValidator = _emailAddressTextControllerValidator;
     passwordVisibility = false;
-    passwordControllerValidator = _passwordControllerValidator;
+    passwordTextControllerValidator = _passwordTextControllerValidator;
   }
 
   @override
@@ -104,18 +138,24 @@ class AuthPageModel extends FlutterFlowModel<AuthPageWidget> {
     unfocusNode.dispose();
     tabBarController?.dispose();
     registerEmailAddressFocusNode?.dispose();
-    registerEmailAddressController?.dispose();
+    registerEmailAddressTextController?.dispose();
+
+    fullNameFocusNode?.dispose();
+    fullNameTextController?.dispose();
+
+    phoneNumberFocusNode?.dispose();
+    phoneNumberTextController?.dispose();
 
     registerPasswordFocusNode?.dispose();
-    registerPasswordController?.dispose();
+    registerPasswordTextController?.dispose();
 
     confirmPasswordFocusNode?.dispose();
-    confirmPasswordController?.dispose();
+    confirmPasswordTextController?.dispose();
 
     emailAddressFocusNode?.dispose();
-    emailAddressController?.dispose();
+    emailAddressTextController?.dispose();
 
     passwordFocusNode?.dispose();
-    passwordController?.dispose();
+    passwordTextController?.dispose();
   }
 }

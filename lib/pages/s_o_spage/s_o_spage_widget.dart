@@ -1,6 +1,7 @@
 import 'package:contacts_service/contacts_service.dart';
 import 'package:permission_handler/permission_handler.dart';
-
+import '/auth/firebase_auth/auth_util.dart';
+import '/backend/backend.dart';
 import '../base.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -8,8 +9,10 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/form_field_controller.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
 import 's_o_spage_model.dart';
 export 's_o_spage_model.dart';
 
@@ -24,7 +27,6 @@ class _SOSpageWidgetState extends BasePageState<SOSpageWidget> {
   late SOSpageModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  Contact? contact;
 
   @override
   void initState() {
@@ -221,20 +223,26 @@ class _SOSpageWidgetState extends BasePageState<SOSpageWidget> {
                                       ),
                                     ),
                                     Expanded(
+                                      child: Form(
+                                        key: _model.formKey,
+                                        autovalidateMode:
+                                            AutovalidateMode.disabled,
                                       child: TextFormField(
                                         controller: _model.textController,
                                         focusNode: _model.textFieldFocusNode,
                                         autofocus: true,
                                         obscureText: false,
                                         decoration: InputDecoration(
-                                          labelStyle: FlutterFlowTheme.of(context)
+                                            labelStyle:
+                                                FlutterFlowTheme.of(context)
                                               .labelMedium
                                               .override(
                                             fontFamily: 'Inter',
                                             letterSpacing: 0.0,
                                           ),
                                           alignLabelWithHint: false,
-                                          hintStyle: FlutterFlowTheme.of(context)
+                                            hintStyle:
+                                                FlutterFlowTheme.of(context)
                                               .labelMedium
                                               .override(
                                             fontFamily: 'Inter',
@@ -285,11 +293,13 @@ class _SOSpageWidgetState extends BasePageState<SOSpageWidget> {
                                           letterSpacing: 0.0,
                                           fontWeight: FontWeight.w600,
                                         ),
-                                        maxLength: 11,
+                                        maxLength: 10,
                                         keyboardType: TextInputType.phone,
-                                        validator: _model.textControllerValidator
+                                          validator: _model
+                                              .textControllerValidator
                                             .asValidator(context),
                                       ),
+                                    ),
                                     ),
                                   ],
                                 ),
@@ -307,8 +317,8 @@ class _SOSpageWidgetState extends BasePageState<SOSpageWidget> {
                                     topRight: Radius.circular(3.0),
                                   ),
                                   border: Border.all(
-                                    color:
-                                    FlutterFlowTheme.of(context).primaryText,
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryText,
                                   ),
                                 ),
                                 child: InkWell(
@@ -321,7 +331,7 @@ class _SOSpageWidgetState extends BasePageState<SOSpageWidget> {
                                     if(allowed){
                                       try {
                                         setState(() async {
-                                          contact = await ContactsService.openDeviceContactPicker();
+                                          var contact = await ContactsService.openDeviceContactPicker();
                                           _model.textController.text = removeCountryCodeAndLeadingZero(contact!.phones![0].value!);
                                         });
                                       } catch (e) {
@@ -333,7 +343,7 @@ class _SOSpageWidgetState extends BasePageState<SOSpageWidget> {
                                     Icons.perm_contact_cal_outlined,
                                     color: FlutterFlowTheme.of(context)
                                         .primaryText,
-                                    size: 35,
+                                    size: 35.0,
                                   ),
                                 ),
                               ),
@@ -341,8 +351,8 @@ class _SOSpageWidgetState extends BasePageState<SOSpageWidget> {
                           ),
                         ),
                         Padding(
-                          padding:
-                          const EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              0.0, 20.0, 0.0, 0.0),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             children: [
@@ -357,7 +367,8 @@ class _SOSpageWidgetState extends BasePageState<SOSpageWidget> {
                                     ),
                                   ),
                                   unselectedWidgetColor:
-                                  FlutterFlowTheme.of(context).secondaryText,
+                                      FlutterFlowTheme.of(context)
+                                          .secondaryText,
                                 ),
                                 child: Checkbox(
                                   value: _model.checkboxValue ??= true,
@@ -370,8 +381,8 @@ class _SOSpageWidgetState extends BasePageState<SOSpageWidget> {
                                     color: FlutterFlowTheme.of(context)
                                         .secondaryText,
                                   ),
-                                  activeColor:
-                                  FlutterFlowTheme.of(context).secondaryText,
+                                  activeColor: FlutterFlowTheme.of(context)
+                                      .secondaryText,
                                   checkColor: FlutterFlowTheme.of(context).info,
                                 ),
                               ),
@@ -390,11 +401,11 @@ class _SOSpageWidgetState extends BasePageState<SOSpageWidget> {
                           ),
                         ),
                         Padding(
-                          padding:
-                          const EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              0.0, 20.0, 0.0, 0.0),
                           child: Container(
                             width: MediaQuery.sizeOf(context).width * 0.9,
-                            height: 155.0,
+                            height: MediaQuery.sizeOf(context).height * 0.3,
                             decoration: BoxDecoration(
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
@@ -462,10 +473,12 @@ class _SOSpageWidgetState extends BasePageState<SOSpageWidget> {
                                         0.0, 20.0, 0.0, 0.0),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.max,
-                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsetsDirectional.fromSTEB(
+                                          padding:
+                                              const EdgeInsetsDirectional.fromSTEB(
                                               0.0, 5.0, 0.0, 0.0),
                                           child: FaIcon(
                                             FontAwesomeIcons.userFriends,
@@ -475,7 +488,8 @@ class _SOSpageWidgetState extends BasePageState<SOSpageWidget> {
                                           ),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsetsDirectional.fromSTEB(
+                                          padding:
+                                              const EdgeInsetsDirectional.fromSTEB(
                                               5.0, 0.0, 0.0, 0.0),
                                           child: Text(
                                             'Who is an SOS contact?',
@@ -483,8 +497,8 @@ class _SOSpageWidgetState extends BasePageState<SOSpageWidget> {
                                                 .bodyMedium
                                                 .override(
                                               fontFamily: 'Inter',
-                                              color:
-                                              FlutterFlowTheme.of(context)
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
                                                   .primary,
                                               letterSpacing: 0.0,
                                               fontWeight: FontWeight.w600,
@@ -514,15 +528,151 @@ class _SOSpageWidgetState extends BasePageState<SOSpageWidget> {
                           ),
                         ),
                         Padding(
-                          padding:
-                          const EdgeInsetsDirectional.fromSTEB(0.0, 50.0, 0.0, 0.0),
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              0.0, 50.0, 0.0, 0.0),
                           child: FFButtonWidget(
                             onPressed: () async {
-                              if(contact != null) {
-                                context.pushNamed('FriendsPage');
+                              var shouldSetState = false;
+                              if (_model.formKey.currentState == null ||
+                                  !_model.formKey.currentState!.validate()) {
+                                return;
                               }
-                              else{
+                              _model.existingUser = await queryUsersRecordOnce(
+                                queryBuilder: (usersRecord) =>
+                                    usersRecord.where(
+                                  'phone_number',
+                                  isEqualTo: _model.textController.text,
+                                ),
+                                singleRecord: true,
+                              ).then((s) => s.firstOrNull);
+                              shouldSetState = true;
+                              if (_model.existingUser?.reference != null) {
+                                _model.existingRequestCount =
+                                    await queryRequestsRecordCount(
+                                  queryBuilder: (requestsRecord) =>
+                                      requestsRecord.where(Filter.or(
+                                    Filter(
+                                      'from',
+                                      isEqualTo: currentUserReference,
+                                    ),
+                                    Filter(
+                                      'to',
+                                      isEqualTo: _model.existingUser?.reference,
+                                    ),
+                                  )),
+                                );
+                                shouldSetState = true;
+                                if (_model.existingRequestCount! > 0) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Request was already sent!',
+                                        style: TextStyle(
+                                          color: FlutterFlowTheme.of(context)
+                                              .primaryText,
+                                        ),
+                                      ),
+                                      duration: const Duration(milliseconds: 4000),
+                                      backgroundColor:
+                                          FlutterFlowTheme.of(context)
+                                              .secondary,
+                                    ),
+                                  );
+                                  if (shouldSetState) setState(() {});
+                                  return;
+                                } else {
+                              _model.existingContactCount =
+                                  await queryContactsRecordCount(
+                                queryBuilder: (contactsRecord) =>
+                                        contactsRecord
+                                            .where(
+                                    'owner',
+                                    isEqualTo: currentUserReference,
+                                            )
+                                            .where(
+                                    'phone_number',
+                                              isEqualTo:
+                                                  _model.textController.text,
+                                  ),
+                              );
+                                  shouldSetState = true;
+                              if (_model.existingContactCount! > 0) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Contact with the same phone number already exists!',
+                                      style: TextStyle(
+                                        color: FlutterFlowTheme.of(context)
+                                            .primaryText,
+                                      ),
+                                    ),
+                                    duration: const Duration(milliseconds: 4000),
+                                    backgroundColor:
+                                            FlutterFlowTheme.of(context)
+                                                .secondary,
+                                  ),
+                                );
+                                    if (shouldSetState) setState(() {});
+                                    return;
+                              } else {
+                                  await RequestsRecord.collection.doc().set({
+                                    ...createRequestsRecordData(
+                                      from: currentUserReference,
+                                      to: _model.existingUser?.reference,
+                                    ),
+                                    ...mapToFirestore(
+                                      {
+                                        'date': FieldValue.serverTimestamp(),
+                                      },
+                                    ),
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Contact was added successfully',
+                                        style: TextStyle(
+                                          color: FlutterFlowTheme.of(context)
+                                              .primaryText,
+                                        ),
+                                      ),
+                                      duration: const Duration(milliseconds: 4000),
+                                      backgroundColor:
+                                          FlutterFlowTheme.of(context)
+                                              .secondary,
+                                    ),
+                                  );
+
+                                  context.pushNamed('FriendsPage');
+                                  }
+
+                                  if (shouldSetState) setState(() {});
+                                  return;
+                                }
+                                } else {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (alertDialogContext) {
+                                      return WebViewAware(
+                                        child: AlertDialog(
+                                          title: const Text('User not found'),
+                                          content: const Text(
+                                              'User with that phone number is not yet registered!'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(
+                                                  alertDialogContext),
+                                              child: const Text('Ok'),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                if (shouldSetState) setState(() {});
+                                return;
                               }
+
+                              if (shouldSetState) setState(() {});
                             },
                             text: 'ADD SOS CONTACT',
                             options: FFButtonOptions(

@@ -224,7 +224,7 @@ extension _GoRouterStateExtensions on GoRouterState {
       extra != null ? extra as Map<String, dynamic> : {};
   Map<String, dynamic> get allParams => <String, dynamic>{}
     ..addAll(pathParameters)
-    ..addAll(uri.queryParameters)
+    ..addAll(queryParameters)
     ..addAll(extraMap);
   TransitionInfo get transitionInfo => extraMap.containsKey(kTransitionInfoKey)
       ? extraMap[kTransitionInfoKey] as TransitionInfo
@@ -243,7 +243,7 @@ class FFParameters {
   // present is the special extra parameter reserved for the transition info.
   bool get isEmpty =>
       state.allParams.isEmpty ||
-      (state.allParams.length == 1 &&
+      (state.extraMap.length == 1 &&
           state.extraMap.containsKey(kTransitionInfoKey));
   bool isAsyncParam(MapEntry<String, dynamic> param) =>
       asyncParams.containsKey(param.key) && param.value is String;
@@ -264,10 +264,10 @@ class FFParameters {
 
   dynamic getParam<T>(
     String paramName,
-    ParamType type, {
+    ParamType type, [
     bool isList = false,
     List<String>? collectionNamePath,
-  }) {
+  ]) {
     if (futureParamValues.containsKey(paramName)) {
       return futureParamValues[paramName];
     }
@@ -317,7 +317,7 @@ class FFRoute {
           }
 
           if (requireAuth && !appStateNotifier.loggedIn) {
-            appStateNotifier.setRedirectLocationIfUnset(state.uri.toString());
+            appStateNotifier.setRedirectLocationIfUnset(state.location);
             return '/landingPage';
           }
           return null;
@@ -392,7 +392,7 @@ class RootPageContext {
   static bool isInactiveRootPage(BuildContext context) {
     final rootPageContext = context.read<RootPageContext?>();
     final isRootPage = rootPageContext?.isRootPage ?? false;
-    final location = GoRouterState.of(context).uri.toString();
+    final location = GoRouter.of(context).location;
     return isRootPage &&
         location != '/' &&
         location != rootPageContext?.errorRoute;

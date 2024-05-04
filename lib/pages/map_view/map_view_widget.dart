@@ -19,15 +19,24 @@ class _MapViewWidgetState extends BasePageState<MapViewWidget> {
   late MapViewModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  LatLng? currentUserLocationValue;
+  LatLng? currentUserLocationValue, locationToShow;
 
   @override
   void initState() {
     super.initState();
     _model = createModel(context, () => MapViewModel());
 
-    getCurrentUserLocation(defaultLocation: const LatLng(0.0, 0.0), cached: true)
+    getCurrentUserLocation(defaultLocation: const LatLng(7.447030, 125.809412), cached: true)
         .then((loc) => setState(() => currentUserLocationValue = loc));
+
+    if(currentUserLocationValue != null && isInsideBoundary(currentUserLocationValue!.latitude, currentUserLocationValue!.longitude)){
+      setState(() {
+        locationToShow = currentUserLocationValue;
+      });
+    }
+    else{
+      locationToShow = const LatLng(7.447030, 125.809412); //default Tagum City Location
+    }
   }
 
   @override
@@ -143,7 +152,7 @@ class _MapViewWidgetState extends BasePageState<MapViewWidget> {
                 children: [
                   Expanded(
                     child: FlutterFlowStaticMap(
-                      location: currentUserLocationValue!,
+                      location: locationToShow!,
                       apiKey:
                           'pk.eyJ1IjoiMjFzdGZsb29yZGV2IiwiYSI6ImNsbWtpYzB4dzAybHAya3BuMDM4OGIyOGYifQ.DNq8ydslViJqjiZ8zu_37g',
                       style: mapbox.MapBoxStyle.Light,

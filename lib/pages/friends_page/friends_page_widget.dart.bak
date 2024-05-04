@@ -781,21 +781,13 @@ class _FriendsPageWidgetState extends BasePageState<FriendsPageWidget>
                     ),
                   ),
                     if (_model.pageIndex == 0)
-                      AuthUserStreamWidget(
-                        builder: (context) =>
                       StreamBuilder<List<ContactsRecord>>(
                         stream: queryContactsRecord(
                           queryBuilder: (contactsRecord) =>
-                                contactsRecord.where(Filter.or(
-                              Filter(
+                              contactsRecord.where(
                             'owner',
                             isEqualTo: currentUserReference,
                           ),
-                              Filter(
-                                'phone_number',
-                                isEqualTo: currentPhoneNumber,
-                              ),
-                            )),
                         ),
                         builder: (context, snapshot) {
                           // Customize what your widget looks like when it's loading.
@@ -819,8 +811,7 @@ class _FriendsPageWidgetState extends BasePageState<FriendsPageWidget>
                             padding: EdgeInsets.zero,
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
-                              itemCount:
-                                  friendsListViewContactsRecordList.length,
+                            itemCount: friendsListViewContactsRecordList.length,
                             itemBuilder: (context, friendsListViewIndex) {
                               final friendsListViewContactsRecord =
                                   friendsListViewContactsRecordList[
@@ -833,8 +824,7 @@ class _FriendsPageWidgetState extends BasePageState<FriendsPageWidget>
                                     SlidableAction(
                                       label: 'Delete',
                                       backgroundColor:
-                                            FlutterFlowTheme.of(context)
-                                                .primary,
+                                          FlutterFlowTheme.of(context).primary,
                                       icon: Icons.delete_forever_sharp,
                                       onPressed: (_) async {
                                         var confirmDialogResponse =
@@ -854,16 +844,16 @@ class _FriendsPageWidgetState extends BasePageState<FriendsPageWidget>
                                                                 Navigator.pop(
                                                                     alertDialogContext,
                                                                     false),
-                                                              child: const Text(
-                                                                  'Cancel'),
+                                                            child:
+                                                                const Text('Cancel'),
                                                           ),
                                                           TextButton(
                                                             onPressed: () =>
                                                                 Navigator.pop(
                                                                     alertDialogContext,
                                                                     true),
-                                                              child: const Text(
-                                                                  'Confirm'),
+                                                            child:
+                                                                const Text('Confirm'),
                                                           ),
                                                         ],
                                                       ),
@@ -886,14 +876,13 @@ class _FriendsPageWidgetState extends BasePageState<FriendsPageWidget>
                                                       .primaryText,
                                                 ),
                                               ),
-                                                duration: const Duration(
-                                                    milliseconds: 4000),
+                                              duration:
+                                                  const Duration(milliseconds: 4000),
                                               backgroundColor:
                                                   FlutterFlowTheme.of(context)
                                                       .secondary,
                                             ),
                                           );
-                                            return;
                                         }
                                       },
                                     ),
@@ -932,7 +921,6 @@ class _FriendsPageWidgetState extends BasePageState<FriendsPageWidget>
                             },
                           );
                         },
-                      ),
                       ),
                 ],
               ),

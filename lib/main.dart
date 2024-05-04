@@ -18,20 +18,25 @@ GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
+  GoRouter.optionURLReflectsImperativeAPIs = true;
   usePathUrlStrategy();
   await initFirebase();
 
   await FlutterFlowTheme.initialize();
 
+  // runApp(const MyApp());
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((value) =>
-      runApp(MaterialApp(
-        builder: FToastBuilder(),
-        home: const MyApp(),
-        navigatorKey: navigatorKey,
-      ),));
+      runApp(const MyApp()));
+  // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+  //     .then((value) =>
+  //     runApp(MaterialApp(
+  //       builder: FToastBuilder(),
+  //       home: const MyApp(),
+  //     ),));
 
 }
+
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});

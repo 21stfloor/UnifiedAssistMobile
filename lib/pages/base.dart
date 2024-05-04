@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +27,7 @@ class BasePageState<T extends BasePage> extends State<T> {
   @override
   void initState() {
     super.initState();
-
+    pressCount = 0;
     initializeVolumeListener();
   }
 
@@ -42,25 +41,25 @@ class BasePageState<T extends BasePage> extends State<T> {
       if (call.method == "volumeBtnPressed") {
         if (call.arguments == "volume_down" && alarmState) {
           print("pressCount $pressCount");
-          setState(() {
-            pressCount++;
-            if (timer != null) {
-              timer!.cancel(); // Stop the auto-decrementing timer
-              timer = null;
-            }
-            // Restart the auto-decrementing timer after a delay if no further button presses occur
-            Timer(const Duration(seconds: 1), () {
-              startTimer();
-            });
-          });
+          pressCount++;
+
+          if (timer != null) {
+            timer!.cancel(); // Stop the auto-decrementing timer
+            timer = null;
+          }
+          // Restart the auto-decrementing timer after a delay if no further button presses occur
+
           if(pressCount >= 3) {
-            setState(() {
-              pressCount = 0;
-            });
+            pressCount = 0;
+
             await playLoudAudio();
             var message = await composeSMS();
             Fluttertoast.showToast(msg: await sendSOS(message!));
           }
+
+          Timer(const Duration(seconds: 1), () {
+            startTimer();
+          });
         }
       }
 
@@ -68,11 +67,22 @@ class BasePageState<T extends BasePage> extends State<T> {
     });
   }
 
+  @override
+  void dispose() {
+    if(timer != null) {
+      timer!.cancel();
+    }
+    super.dispose();
+  }
+
 
   startTimer(){
+    if(timer != null) {
+      timer!.cancel();
+    }
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
 
-      setState(() {
+
         if(pressCount >= 1) {
           pressCount--;
         }
@@ -80,7 +90,6 @@ class BasePageState<T extends BasePage> extends State<T> {
           timer.cancel();
         }
       });
-    });
   }
 
   playLoudAudio() async {

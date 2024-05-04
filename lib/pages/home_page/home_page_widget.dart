@@ -392,7 +392,7 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> {
                                     hoverColor: Colors.transparent,
                                     highlightColor: Colors.transparent,
                                     onTap: () async {
-                                      context.pushNamed('SOSpage');
+                                        context.pushNamed('FriendsPage');
                                     },
                                     child: Container(
                                       width: 140.0,
