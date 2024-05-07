@@ -1016,6 +1016,9 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                                                       .validate()) {
                                                                 return;
                                                               }
+                                                              var formattedPhoneNumber = removeCountryCodeAndLeadingZero(_model
+                                                                  .phoneNumberTextController
+                                                                  .text);
                                                               _model.existingPhoneUserCount =
                                                                   await queryUsersRecordCount(
                                                                 queryBuilder:
@@ -1024,15 +1027,13 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                                                             .where(
                                                                   'phone_number',
                                                                   isEqualTo:
-                                                                    removeCountryCodeAndLeadingZero(_model
-                                                                      .phoneNumberTextController
-                                                                      .text),
+                                                                  formattedPhoneNumber,
                                                                 ),
                                                               );
                                                               shouldSetState =
                                                                   true;
                                                               if (_model
-                                                                      .existingPhoneUserCount! >
+                                                                      .existingPhoneUserCount! <=
                                                                   0) {
                                                               GoRouter.of(
                                                                       context)
