@@ -113,6 +113,7 @@ dependencies:
   volume_watcher: ^2.0.1
   flutter_sms: 2.3.3
   permission_handler: ^11.3.1
+  flutter_launcher_icons: ^0.13.1
 
 dependency_overrides:
   http: 1.2.0
@@ -120,7 +121,6 @@ dependency_overrides:
   uuid: ^4.0.0
 
 dev_dependencies:
-  flutter_launcher_icons: 0.13.1
   flutter_lints: 3.0.0
   lints: 3.0.0
 
