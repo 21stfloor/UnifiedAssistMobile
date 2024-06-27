@@ -59,7 +59,7 @@ Future<String?> composeSMS() async {
       .then((loc) => currentUserLocationValue = loc);
   print('currentUserLocationValue $currentUserLocationValue');
 
-  var mapUrl = "https://www.google.com/maps/@${currentUserLocationValue!.latitude},${currentUserLocationValue!.longitude},16z";
+  var mapUrl = "${currentUserLocationValue!.latitude},${currentUserLocationValue!.longitude}";
 
   if(currentUserLocationValue!.latitude == 0){
     return "Unified Assist SOS: I am in need of immediate assistance. Please send help as soon as possible.";

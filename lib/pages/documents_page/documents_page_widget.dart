@@ -205,7 +205,9 @@ class _DocumentsPageWidgetState extends BasePageState<DocumentsPageWidget> {
                       child:
                       FFButtonWidget(
                         onPressed: () async {
-                          String? filePath = await FilePicker.platform.pickFiles(
+                          try {
+                            String? filePath = await FilePicker.platform
+                                .pickFiles(
                               type: FileType.custom,
                               allowedExtensions: ['docx', 'doc'],
                             ).then((value) => value?.files.single.path);
@@ -217,21 +219,27 @@ class _DocumentsPageWidgetState extends BasePageState<DocumentsPageWidget> {
                               });
 
                               audioBytes.clear();
-                              if(player.playing) {
+                              if (player.playing) {
                                 player.stop();
                               }
                               setState(() {
                                 _currentIndex = -1;
                               });
                               // print(textToRead); // Use the extracted text as needed
-                              for(String text in paragraphs){
-                                var newAudio = await getTextToSpeech(removeNewLines(text));
-                                if(newAudio != null){
+                              for (String text in paragraphs) {
+                                var newAudio = await getTextToSpeech(
+                                    removeNewLines(text));
+                                if (newAudio != null) {
                                   audioBytes.add(newAudio);
                                 }
                               }
                               _playNext();
                             }
+                          }
+                          catch(exception){
+                            Fluttertoast.showToast(
+                                msg: exception.toString());
+                          }
                         },
                         text: '',
                         icon: const Icon(

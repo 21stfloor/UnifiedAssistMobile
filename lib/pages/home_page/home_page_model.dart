@@ -8,19 +8,17 @@ class HomePageModel extends FlutterFlowModel<HomePageWidget> {
 
   String webUrl = 'https://21stfloor.github.io/UnifiedAssist/';
 
+  bool alarmState = true;
+
   ///  State fields for stateful widgets in this page.
 
   final unfocusNode = FocusNode();
   // Model for appbar component.
   late AppbarModel appbarModel;
-  // State field(s) for PageView widget.
-  PageController? pageViewController;
-
-  int get pageViewCurrentIndex => pageViewController != null &&
-          pageViewController!.hasClients &&
-          pageViewController!.page != null
-      ? pageViewController!.page!.round()
-      : 0;
+  // State field(s) for TabBar widget.
+  TabController? tabBarController;
+  int get tabBarCurrentIndex =>
+      tabBarController != null ? tabBarController!.index : 0;
 
   @override
   void initState(BuildContext context) {
@@ -31,5 +29,6 @@ class HomePageModel extends FlutterFlowModel<HomePageWidget> {
   void dispose() {
     unfocusNode.dispose();
     appbarModel.dispose();
+    tabBarController?.dispose();
   }
 }

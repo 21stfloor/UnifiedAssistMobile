@@ -244,7 +244,8 @@ class _ObstaclePageWidgetState extends BasePageState<ObstaclePageWidget> {
                                   }
                                 }
                                 catch (error){
-                                  print(error);
+                                  Fluttertoast.showToast(
+                                      msg: error.toString());
                                 }
                               },
                               text: '',
@@ -372,7 +373,7 @@ class _ObstaclePageWidgetState extends BasePageState<ObstaclePageWidget> {
   Future<PostResponse?> _postData() async {
 
     final response = await http.post(
-      Uri.parse('https://detect.roboflow.com/furniture_detector/1?api_key=Fm5i5qj5uNmV7UzI1UPS&confidence=0.5'),
+      Uri.parse('https://detect.roboflow.com/od-cte7x/2?api_key=Fm5i5qj5uNmV7UzI1UPS&confidence=0.5'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

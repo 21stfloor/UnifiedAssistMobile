@@ -166,7 +166,7 @@ class _MapViewWidgetState extends BasePageState<MapViewWidget> {
                         topRight: Radius.circular(0.0),
                       ),
                       markerColor: FlutterFlowTheme.of(context).primary,
-                      zoom: 11,
+                      zoom: 10,
                       tilt: 0,
                       rotation: 0,
                     ),
