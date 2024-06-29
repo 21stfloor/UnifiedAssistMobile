@@ -125,26 +125,26 @@ class _DocumentsPageWidgetState extends BasePageState<DocumentsPageWidget> {
                               ],
                             ),
                           ),
-                          Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Switch.adaptive(
-                                value: _model.switchValue ??= true,
-                                onChanged: (newValue) async {
-                                  setState(
-                                      () => _model.switchValue = newValue);
-                                },
-                                activeColor:
-                                    FlutterFlowTheme.of(context).primary,
-                                activeTrackColor:
-                                    FlutterFlowTheme.of(context).accent4,
-                                inactiveTrackColor:
-                                    FlutterFlowTheme.of(context).primaryText,
-                                inactiveThumbColor:
-                                    FlutterFlowTheme.of(context).secondaryText,
-                              ),
-                            ],
-                          ),
+                          // Column(
+                          //   mainAxisSize: MainAxisSize.max,
+                          //   children: [
+                          //     Switch.adaptive(
+                          //       value: _model.switchValue ??= true,
+                          //       onChanged: (newValue) async {
+                          //         setState(
+                          //             () => _model.switchValue = newValue);
+                          //       },
+                          //       activeColor:
+                          //           FlutterFlowTheme.of(context).primary,
+                          //       activeTrackColor:
+                          //           FlutterFlowTheme.of(context).accent4,
+                          //       inactiveTrackColor:
+                          //           FlutterFlowTheme.of(context).primaryText,
+                          //       inactiveThumbColor:
+                          //           FlutterFlowTheme.of(context).secondaryText,
+                          //     ),
+                          //   ],
+                          // ),
                         ],
                       ),
                     ),
@@ -186,7 +186,7 @@ class _DocumentsPageWidgetState extends BasePageState<DocumentsPageWidget> {
                               paragraphs.toString(),
                               textAlign: TextAlign.start,
                               style: FlutterFlowTheme.of(context)
-                                  .bodyMedium
+                                  .bodyLarge
                                   .override(
                                 fontFamily: 'Inter',
                                 letterSpacing: 0,

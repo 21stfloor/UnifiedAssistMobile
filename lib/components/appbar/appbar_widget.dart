@@ -53,7 +53,7 @@ class _AppbarWidgetState extends State<AppbarWidget> {
             buttonSize: 50,
             icon: Icon(
               Icons.notifications_rounded,
-              color: Colors.white,
+              color: Colors.transparent,
               size: 30,
             ),
             onPressed: () {
