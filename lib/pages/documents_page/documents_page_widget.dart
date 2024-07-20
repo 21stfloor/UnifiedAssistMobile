@@ -4,6 +4,7 @@ import 'package:docx_to_text/docx_to_text.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
 import '../base.dart';
 import '../text_page/text_page_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -171,7 +172,8 @@ class _DocumentsPageWidgetState extends BasePageState<DocumentsPageWidget> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
+                  Expanded(
+                    child: Container(
                     width: double.infinity,
                     height: MediaQuery.sizeOf(context).height * 0.5,
                     decoration: const BoxDecoration(),
@@ -189,7 +191,8 @@ class _DocumentsPageWidgetState extends BasePageState<DocumentsPageWidget> {
                                   .bodyLarge
                                   .override(
                                 fontFamily: 'Inter',
-                                letterSpacing: 0,
+                                      fontSize: 30.0,
+                                      letterSpacing: 0.0,
                               ),
                             ),
                           ),
@@ -197,132 +200,89 @@ class _DocumentsPageWidgetState extends BasePageState<DocumentsPageWidget> {
                       ),
                     ),
                   ),
+                  ),
                   Align(
-                    alignment: const AlignmentDirectional(1.0, 1.0),
-                    child: Padding(
-                      padding:
-                          const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 10.0, 0.0),
-                      child:
-                      FFButtonWidget(
-                        onPressed: () async {
-                          try {
-                            String? filePath = await FilePicker.platform
-                                .pickFiles(
-                              type: FileType.custom,
-                              allowedExtensions: ['docx', 'doc'],
-                            ).then((value) => value?.files.single.path);
-                            if (filePath != null) {
-                              var documentText = await readDocxFile(filePath);
+                    alignment: const AlignmentDirectional(0.0, 0.0),
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () async {
+                        try {
+                          if(_isLoadingVoice){
+                            return;
+                          }
 
-                              setState(() {
-                                paragraphs = splitString(documentText, 2500);
-                              });
+                          String? filePath = await FilePicker.platform
+                              .pickFiles(
+                            type: FileType.custom,
+                            allowedExtensions: ['docx', 'doc'],
+                          ).then((value) => value?.files.single.path);
+                          if (filePath != null) {
+                            var documentText = await readDocxFile(filePath);
 
-                              audioBytes.clear();
-                              if (player.playing) {
-                                player.stop();
-                              }
-                              setState(() {
-                                _currentIndex = -1;
-                              });
-                              // print(textToRead); // Use the extracted text as needed
-                              for (String text in paragraphs) {
-                                var newAudio = await getTextToSpeech(
-                                    removeNewLines(text));
-                                if (newAudio != null) {
-                                  audioBytes.add(newAudio);
-                                }
-                              }
-                              _playNext();
+                            setState(() {
+                              paragraphs = splitString(documentText, 2500);
+                            });
+
+                            audioBytes.clear();
+                            if (player.playing) {
+                              player.stop();
                             }
+                            setState(() {
+                              _currentIndex = -1;
+                            });
+                            // print(textToRead); // Use the extracted text as needed
+                            for (String text in paragraphs) {
+                              var newAudio = await getTextToSpeech(
+                                  removeNewLines(text));
+                              if (newAudio != null) {
+                                audioBytes.add(newAudio);
+                              }
+                            }
+                            _playNext();
                           }
-                          catch(exception){
-                            Fluttertoast.showToast(
-                                msg: exception.toString());
-                          }
-                        },
-                        text: '',
-                        icon: const Icon(
-                          Icons.upload,
-                          size: 50.0,
-                        ),
-                        options: FFButtonOptions(
-                          height: 65.0,
-                          padding: const EdgeInsetsDirectional.fromSTEB(
-                              8.0, 0.0, 0.0, 0.0),
-                          iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                              0.0, 0.0, 0.0, 0.0),
-                          color: FlutterFlowTheme.of(context).primary,
-                          textStyle:
-                              FlutterFlowTheme.of(context).titleSmall.override(
-                                    fontFamily: 'Inter',
-                                    color: Colors.white,
-                                    letterSpacing: 0.0,
-                                  ),
-                          elevation: 3.0,
-                          borderSide: const BorderSide(
-                            color: Colors.transparent,
-                            width: 1.0,
-                          ),
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(45.0),
-                            bottomRight: Radius.circular(45.0),
-                            topLeft: Radius.circular(45.0),
-                            topRight: Radius.circular(45.0),
+                        }
+                        catch(exception){
+                          Fluttertoast.showToast(
+                              msg: exception.toString());
+                        }
+                      },
+                      child: Container(
+                        width: MediaQuery.sizeOf(context).width * 1.0,
+                        height: MediaQuery.sizeOf(context).height * 0.1,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              FlutterFlowTheme.of(context).primary,
+                              FlutterFlowTheme.of(context).secondary
+                            ],
+                            stops: const [0.0, 1.0],
+                            begin: const AlignmentDirectional(-1.0, 0.0),
+                            end: const AlignmentDirectional(1.0, 0),
                           ),
                         ),
-                      ),
+                        child: Align(
+                          alignment: const AlignmentDirectional(0.0, 0.0),
+                          child:
+                          _isLoadingVoice? Container():
+                          Icon(
+                            Icons.upload,
+                            color: FlutterFlowTheme.of(context).primaryBackground,
+                            size: 50,
+                          ),
                     ),
                   ),
-                  Container(
-                    width: MediaQuery.sizeOf(context).width * 1.0,
-                    height: MediaQuery.sizeOf(context).height * 0.1,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          FlutterFlowTheme.of(context).primary,
-                          FlutterFlowTheme.of(context).secondary
-                        ],
-                        stops: const [0.0, 1.0],
-                        begin: const AlignmentDirectional(-1.0, 0.0),
-                        end: const AlignmentDirectional(1.0, 0),
                       ),
                     ),
-                    child:
-                        _currentIndex == -1?
-                    Container():
-                    Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.skip_previous),
-                              onPressed: _playPrevious,
-                            ),
-                            IconButton(
-                              icon: player.playing? const Icon(Icons.pause) : const Icon(Icons.play_arrow),
-                              onPressed: () {
-                                if(player.playing){
-                                  player.pause();
-                                }
-                                else{
-                                  player.play();
-                                }
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.skip_next),
-                              onPressed: _playNext,
-                            ),
-                          ],
-                        ),
-                  ),)
                 ].divide(const SizedBox(height: 20.0)),
-            ),
+                            ),
+                            ),
+                        ),
           ),
         ),
-      ),
-    ));
+      );
   }
 
   String removeNewLines(String input) {

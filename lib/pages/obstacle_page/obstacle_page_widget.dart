@@ -30,6 +30,7 @@ class _ObstaclePageWidgetState extends BasePageState<ObstaclePageWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   CameraController? controller;
   List<CameraDescription> _cameras = <CameraDescription>[];
+  bool isLoading = false;
 
   late String base64Captured;
   final Iterable<Duration> pauses = [
@@ -51,27 +52,7 @@ class _ObstaclePageWidgetState extends BasePageState<ObstaclePageWidget> {
   Future<void> initializeCamera() async {
     _cameras = await availableCameras();
 
-    // controller = CameraController(_cameras[0], ResolutionPreset.max);
     onNewCameraSelected(_cameras[0]);
-    // controller!.initialize().then((_) {
-    //   if (!mounted) {
-    //     return;
-    //   }
-    //   controller!.startImageStream((image) {
-    //     setState(() { showCamera=true; });
-    //   });
-    // }).catchError((Object e) {
-    //   if (e is CameraException) {
-    //     switch (e.code) {
-    //       case 'CameraAccessDenied':
-    //       // Handle access errors here.
-    //         break;
-    //       default:
-    //       // Handle other errors here.
-    //         break;
-    //     }
-    //   }
-    // });
   }
 
   // #docregion AppLifecycle
@@ -172,26 +153,6 @@ class _ObstaclePageWidgetState extends BasePageState<ObstaclePageWidget> {
                               ],
                             ),
                           ),
-                          Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Switch.adaptive(
-                                value: _model.switchValue ??= true,
-                                onChanged: (newValue) async {
-                                  setState(
-                                          () => _model.switchValue = newValue);
-                                },
-                                activeColor:
-                                FlutterFlowTheme.of(context).primary,
-                                activeTrackColor:
-                                FlutterFlowTheme.of(context).accent4,
-                                inactiveTrackColor:
-                                FlutterFlowTheme.of(context).primaryText,
-                                inactiveThumbColor:
-                                FlutterFlowTheme.of(context).secondaryText,
-                              ),
-                            ],
-                          ),
                         ],
                       ),
                     ),
@@ -201,15 +162,16 @@ class _ObstaclePageWidgetState extends BasePageState<ObstaclePageWidget> {
               centerTitle: true,
               expandedTitleScale: 1.0,
             ),
+            toolbarHeight: 70.0,
             elevation: 2.0,
           ),
         ),
         body: SafeArea(
           top: true,
           child:
-              Stack(children: [
-                _cameraPreviewWidget(),
-                Container(
+          Stack(children: [
+              _cameraPreviewWidget(),
+          Container(
                   width: MediaQuery.sizeOf(context).width * 1.0,
                   height: MediaQuery.sizeOf(context).height * 1.0,
                   decoration: const BoxDecoration(
@@ -221,131 +183,79 @@ class _ObstaclePageWidgetState extends BasePageState<ObstaclePageWidget> {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Align(
-                          alignment: const AlignmentDirectional(1.0, 1.0),
+                  InkWell(
+                    splashColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onTap: ()
+                    async {
+                      if(isLoading){
+                        return;
+                      }
+                      print('toggleScan pressed ...');
+                      setState(() {
+                        isLoading = true;
+                      });
+                      XFile photo = await controller!.takePicture();
+                      List<int> photoAsBytes = await photo.readAsBytes();
+                      base64Captured = convert.base64Encode(photoAsBytes);
+                      print(base64Captured);
+                      // print(await cameraImageToBase64(_image!));
+                      // postData();
+                      try {
+                        var result = await _postData();
+                        print(result!.predictions.toString());
+                        if(result.predictions.isNotEmpty) {
+                          Vibrate.vibrateWithPauses(pauses);
+                        }
+                      }
+                      catch (error){
+                        Fluttertoast.showToast(
+                            msg: error.toString());
+                      }
+
+                      setState(() {
+                        isLoading = false;
+                      });
+                    },
+                    child: Container(
+                      width: MediaQuery.sizeOf(context).width * 1.0,
+                      height: MediaQuery.sizeOf(context).height * 0.1,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            FlutterFlowTheme.of(context).primary,
+                            FlutterFlowTheme.of(context).secondary
+                          ],
+                          stops: const [0.0, 1.0],
+                          begin: const AlignmentDirectional(-1.0, 0.0),
+                          end: const AlignmentDirectional(1.0, 0),
+                        ),
+                      ),
+                      child: Align(
+                        alignment: const AlignmentDirectional(0.0, 0.0),
                           child: Padding(
-                            padding:
-                            const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 10.0, 0.0),
-                            child:
-                            FFButtonWidget(
-                              onPressed: () async {
-                                print('toggleScan pressed ...');
-                                XFile photo = await controller!.takePicture();
-                                List<int> photoAsBytes = await photo.readAsBytes();
-                                base64Captured = convert.base64Encode(photoAsBytes);
-                                print(base64Captured);
-                                // print(await cameraImageToBase64(_image!));
-                                // postData();
-                                try {
-                                  var result = await _postData();
-                                  print(result!.predictions.toString());
-                                  if(result.predictions.isNotEmpty) {
-                                    Vibrate.vibrateWithPauses(pauses);
-                                  }
-                                }
-                                catch (error){
-                                  Fluttertoast.showToast(
-                                      msg: error.toString());
-                                }
-                              },
-                              text: '',
-                              icon: const Icon(
-                                Icons.camera_alt,
-                                size: 50.0,
-                              ),
-                              options: FFButtonOptions(
-                                height: 65.0,
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    8.0, 0.0, 0.0, 0.0),
-                                iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                    0.0, 0.0, 0.0, 0.0),
-                                color: FlutterFlowTheme.of(context).primary,
-                                textStyle:
-                                FlutterFlowTheme.of(context).titleSmall.override(
-                                  fontFamily: 'Inter',
-                                  color: Colors.white,
-                                  letterSpacing: 0.0,
-                                ),
-                                elevation: 3.0,
-                                borderSide: const BorderSide(
-                                  color: Colors.transparent,
-                                  width: 1.0,
-                                ),
-                                borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.circular(45.0),
-                                  bottomRight: Radius.circular(45.0),
-                                  topLeft: Radius.circular(45.0),
-                                  topRight: Radius.circular(45.0),
-                                ),
-                              ),
-                            ),
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              0.0, 0.0, 10.0, 0.0),
+                          child:
+                          isLoading? Container():
+                          Icon(
+                            Icons.camera_alt,
+                            color: FlutterFlowTheme.of(context).primaryBackground,
+                            size: 50,
+                          ),
                           ),
                         ),
-                        Container(
-                          width: MediaQuery.sizeOf(context).width * 1.0,
-                          height: MediaQuery.sizeOf(context).height * 0.1,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                FlutterFlowTheme.of(context).primary,
-                                FlutterFlowTheme.of(context).secondary
-                              ],
-                              stops: const [0.0, 1.0],
-                              begin: const AlignmentDirectional(-1.0, 0.0),
-                              end: const AlignmentDirectional(1.0, 0),
-                            ),
-                          ),
-                          child:
-                          Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(onPressed: () async {
-                                print("VIEW clicked");
-
-                                onPausePreviewButtonPressed();
-                                // setState(() {
-                                //   showCamera = !showCamera;
-                                // });
-                                //
-                                // if(showCamera){
-                                //   await controller!.startImageStream((image) {
-                                //     setState(() { });
-                                //   });
-                                // }
-                                // else{
-                                //     await controller!.stopImageStream();
-                                // }
-                              }, icon:
-                                  Icon(
-                                    Icons.remove_red_eye,
-                                    color: FlutterFlowTheme.of(context).alternate,
-                                    size: 24.0,
-                                  )),
-
-                              Text(
-                                'VIEW',
-                                style:
-                                FlutterFlowTheme.of(context).titleSmall.override(
-                                  fontFamily: 'Inter',
-                                  fontSize: 14.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                            ],
                           ),
                         ),
                       ].divide(const SizedBox(height: 20.0)),
                     ),
                   ),
-                )
-              ],),
-
-
         ),
+          ]
       ),
-    );
+    )));
   }
 
   Widget _cameraPreviewWidget() {

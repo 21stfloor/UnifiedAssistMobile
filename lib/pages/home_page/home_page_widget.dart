@@ -84,6 +84,7 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
               centerTitle: true,
               expandedTitleScale: 1.0,
                             ),
+            toolbarHeight: 12.0,
                           ),
                         ),
         body: SafeArea(
@@ -348,11 +349,10 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
                                         ),
                                         ToggleIcon(
                                           onPressed: () async {
-                                                        setState(() => _model
-                                                                .alarmState =
-                                                            !_model.alarmState);
+                                                        setState(() => alarmState =
+                                                            !alarmState);
                                           },
-                                                      value: _model.alarmState,
+                                                      value: alarmState,
                                           onIcon: Icon(
                                             Icons.check_box,
                                                         color:

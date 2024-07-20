@@ -293,7 +293,7 @@ class _SOSpageWidgetState extends BasePageState<SOSpageWidget> {
                                           letterSpacing: 0.0,
                                           fontWeight: FontWeight.w600,
                                         ),
-                                        maxLength: 10,
+                                        maxLength: 11,
                                         keyboardType: TextInputType.phone,
                                           validator: _model
                                               .textControllerValidator

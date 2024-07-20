@@ -3,8 +3,6 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 import 'appbar_model.dart';
 export 'appbar_model.dart';
@@ -41,35 +39,35 @@ class _AppbarWidgetState extends State<AppbarWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(5, 0, 5, 8),
+      padding: const EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 8.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           FlutterFlowIconButton(
             borderColor: Colors.transparent,
-            borderRadius: 30,
-            borderWidth: 1,
-            buttonSize: 50,
-            icon: Icon(
+            borderRadius: 30.0,
+            borderWidth: 1.0,
+            buttonSize: 50.0,
+            icon: const Icon(
               Icons.notifications_rounded,
               color: Colors.transparent,
-              size: 30,
+              size: 30.0,
             ),
             onPressed: () {
               print('IconButton pressed ...');
             },
           ),
           Align(
-            alignment: AlignmentDirectional(0, -1),
+            alignment: const AlignmentDirectional(0.0, -1.0),
             child: Text(
               'UNIFIED ASSIST',
               textAlign: TextAlign.center,
               style: FlutterFlowTheme.of(context).headlineMedium.override(
                     fontFamily: 'Poppins',
-                    color: Colors.white,
-                    fontSize: 23,
-                    letterSpacing: 0,
+                    color: Colors.transparent,
+                    fontSize: 23.0,
+                    letterSpacing: 0.0,
                     fontWeight: FontWeight.w500,
                   ),
             ),
@@ -77,14 +75,14 @@ class _AppbarWidgetState extends State<AppbarWidget> {
           Builder(
             builder: (context) => FlutterFlowIconButton(
               borderColor: FlutterFlowTheme.of(context).primary,
-              borderRadius: 30,
-              borderWidth: 1,
-              buttonSize: 50,
+              borderRadius: 30.0,
+              borderWidth: 1.0,
+              buttonSize: 50.0,
               fillColor: FlutterFlowTheme.of(context).accent1,
               icon: Icon(
                 Icons.settings_sharp,
                 color: FlutterFlowTheme.of(context).alternate,
-                size: 30,
+                size: 30.0,
               ),
               onPressed: () async {
                 await showDialog(
@@ -94,13 +92,13 @@ class _AppbarWidgetState extends State<AppbarWidget> {
                       elevation: 0,
                       insetPadding: EdgeInsets.zero,
                       backgroundColor: Colors.transparent,
-                      alignment: AlignmentDirectional(0, 0)
+                      alignment: const AlignmentDirectional(0.0, 0.0)
                       .resolve(Directionality.of(context)),
                       child: WebViewAware(
-                        child: Container(
+                        child: SizedBox(
                           height: MediaQuery.sizeOf(context).height * 0.15,
                           width: MediaQuery.sizeOf(context).width * 0.6,
-                          child: OptionsWidget(),
+                          child: const OptionsWidget(),
                         ),
                       ),
                     );

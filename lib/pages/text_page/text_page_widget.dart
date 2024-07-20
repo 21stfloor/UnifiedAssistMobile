@@ -56,12 +56,14 @@ class _TextPageWidgetState extends BasePageState<TextPageWidget> {
       onTap: () => _model.unfocusNode.canRequestFocus
           ? FocusScope.of(context).requestFocus(_model.unfocusNode)
           : FocusScope.of(context).unfocus(),
-      child: Scaffold(
+      child:
+      Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(90.0),
-          child: AppBar(
+          child:
+          AppBar(
             backgroundColor: FlutterFlowTheme.of(context).primary,
             automaticallyImplyLeading: false,
             actions: const [],
@@ -111,10 +113,10 @@ class _TextPageWidgetState extends BasePageState<TextPageWidget> {
                                   ),
                             ),
                           ),
-                          Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              InkWell(
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0.0, 0.0, 8.0, 0.0),
+                            child: InkWell(
                                 splashColor: Colors.transparent,
                                 focusColor: Colors.transparent,
                                 hoverColor: Colors.transparent,
@@ -129,22 +131,6 @@ class _TextPageWidgetState extends BasePageState<TextPageWidget> {
                                   size: 25.0,
                                 ),
                               ),
-                              Switch.adaptive(
-                                value: _model.switchValue ??= true,
-                                onChanged: (newValue) async {
-                                  setState(
-                                      () => _model.switchValue = newValue);
-                                },
-                                activeColor:
-                                    FlutterFlowTheme.of(context).primary,
-                                activeTrackColor: FlutterFlowTheme.of(context)
-                                    .secondaryBackground,
-                                inactiveTrackColor:
-                                    FlutterFlowTheme.of(context).primaryText,
-                                inactiveThumbColor:
-                                    FlutterFlowTheme.of(context).accent3,
-                              ),
-                            ],
                           ),
                         ],
                       ),
@@ -155,10 +141,12 @@ class _TextPageWidgetState extends BasePageState<TextPageWidget> {
               centerTitle: true,
               expandedTitleScale: 1.0,
             ),
+            toolbarHeight: 70.0,
             elevation: 2.0,
           ),
         ),
-        body: SafeArea(
+        body:
+        SafeArea(
           top: true,
           child:
           Stack(
@@ -210,74 +198,52 @@ class _TextPageWidgetState extends BasePageState<TextPageWidget> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Align(
-                        alignment: const AlignmentDirectional(1.0, 1.0),
-                        child: Padding(
-                          padding:
-                              const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 10.0, 0.0),
-                          child:
-                          _isLoadingVoice? Container() :
-                          FFButtonWidget(
-                            onPressed: () {
-                              print('Button pressed ...');
-                              if(!player.playing && text.isNotEmpty) {
-                                playTextToSpeech(text);
-                              }
-                            },
-                            text: '',
-                            icon: const Icon(
-                              Icons.camera_alt,
-                              size: 50.0,
-                            ),
-                            options: FFButtonOptions(
-                              height: 65.0,
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  8.0, 0.0, 0.0, 0.0),
-                              iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                  0.0, 0.0, 0.0, 0.0),
+                        alignment: const AlignmentDirectional(0.0, 1.0),
+                        child: InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () {
+                            if(_isLoadingVoice){
+                              return;
+                            }
+                            print('Button pressed ...');
+                            if(!player.playing && text.isNotEmpty) {
+                              playTextToSpeech(text);
+                            }
+                          },
+                          child: Container(
+                            width: MediaQuery.sizeOf(context).width * 1.0,
+                            height: 90.0,
+                            decoration: BoxDecoration(
                               color: FlutterFlowTheme.of(context).primary,
-                              textStyle:
-                                  FlutterFlowTheme.of(context).titleSmall.override(
-                                        fontFamily: 'Inter',
-                                        color: Colors.white,
-                                        letterSpacing: 0.0,
-                                      ),
-                              elevation: 3.0,
-                              borderSide: const BorderSide(
-                                color: Colors.transparent,
-                                width: 1.0,
-                              ),
-                              borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(45.0),
-                                bottomRight: Radius.circular(45.0),
-                                topLeft: Radius.circular(45.0),
-                                topRight: Radius.circular(45.0),
+                            ),
+                            child: Align(
+                              alignment: const AlignmentDirectional(0.0, 0.0),
+                              child: Padding(
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 0.0, 10.0, 0.0),
+                                child:
+                                _isLoadingVoice? Container():
+                                Icon(
+                                  Icons.camera_alt,
+                                  color: FlutterFlowTheme.of(context).primaryBackground,
+                                  size: 50,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                      // Align(
-                      //   alignment: const AlignmentDirectional(0.0, 1.0),
-                      //   child: Container(
-                      //     width: MediaQuery.sizeOf(context).width * 1.0,
-                      //     height: 100.0,
-                      //     decoration: BoxDecoration(
-                      //       color: FlutterFlowTheme.of(context).primary,
-                      //     ),
-                      //   ),
-                      // ),
                     ].divide(const SizedBox(height: 10.0)),
                   ),
                 ),
               )
+      ]),
 
-            ]
-          )
-        ),
-      ),
-    );
-  }
 
+    )));}
 
   Future<void> playTextToSpeech(String textToRead) async {
     setState(() {

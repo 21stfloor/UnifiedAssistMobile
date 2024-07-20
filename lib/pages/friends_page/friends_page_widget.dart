@@ -6,6 +6,7 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
@@ -196,8 +197,10 @@ class _FriendsPageWidgetState extends BasePageState<FriendsPageWidget>
             children: [
                 Stack(
                 children: [
-                    if (_model.pageIndex == 1)
-                  Container(
+                    Builder(
+                      builder: (context) {
+                        if (_model.pageIndex == 1) {
+                          return Container(
                     width: MediaQuery.sizeOf(context).width * 1.0,
                         height: MediaQuery.sizeOf(context).height * 0.8,
                     decoration: BoxDecoration(
@@ -354,7 +357,7 @@ class _FriendsPageWidgetState extends BasePageState<FriendsPageWidget>
                                                                       listTileUsersRecord
                                                                           .phoneNumber,
                                                                   owner:
-                                                                      currentUserReference,
+                                                                    requestsListViewRequestsRecord.to,
                                                                 ));
                                                             firestoreBatch.delete(
                                                                 requestsListViewRequestsRecord
@@ -381,7 +384,11 @@ class _FriendsPageWidgetState extends BasePageState<FriendsPageWidget>
                                                                         .secondary,
                                                               ),
                                                             );
-                                                          } finally {
+                                                          }
+                                                          catch(error){
+                                                            print(error);
+                                                          }
+                                                          finally {
                                                             await firestoreBatch
                                                                 .commit();
                                                           }
@@ -578,8 +585,9 @@ class _FriendsPageWidgetState extends BasePageState<FriendsPageWidget>
                                                       size: 50.0,
                                                     ),
                                                     Text(
+                                                                      functions.addLeadingZeroIfNeeded(
                                                                   containerUsersRecord
-                                                                      .phoneNumber,
+                                                                              .phoneNumber),
                                                                   style: FlutterFlowTheme.of(
                                                                           context)
                                                           .bodyMedium
@@ -779,23 +787,21 @@ class _FriendsPageWidgetState extends BasePageState<FriendsPageWidget>
                         ],
                       ),
                     ),
-                  ),
-                    if (_model.pageIndex == 0)
-                      AuthUserStreamWidget(
+                          );
+                        } else {
+                          return AuthUserStreamWidget(
                         builder: (context) =>
                       StreamBuilder<List<ContactsRecord>>(
                         stream: queryContactsRecord(
-                          queryBuilder: (contactsRecord) =>
-                                contactsRecord.where(Filter.or(
-                              Filter(
+                                queryBuilder: (contactsRecord) => contactsRecord
+                                    .where(
                             'owner',
                             isEqualTo: currentUserReference,
-                          ),
-                              Filter(
+                                    )
+                                    .where(
                                 'phone_number',
-                                isEqualTo: currentPhoneNumber,
+                                      isNotEqualTo: currentPhoneNumber,
                               ),
-                            )),
                         ),
                         builder: (context, snapshot) {
                           // Customize what your widget looks like when it's loading.
@@ -910,7 +916,9 @@ class _FriendsPageWidgetState extends BasePageState<FriendsPageWidget>
                                       ),
                                 ),
                                 subtitle: Text(
-                                  friendsListViewContactsRecord.phoneNumber,
+                                          functions.addLeadingZeroIfNeeded(
+                                              friendsListViewContactsRecord
+                                                  .phoneNumber),
                                   style: FlutterFlowTheme.of(context)
                                       .labelMedium
                                       .override(
@@ -933,6 +941,9 @@ class _FriendsPageWidgetState extends BasePageState<FriendsPageWidget>
                           );
                         },
                       ),
+                          );
+                        }
+                      },
                       ),
                 ],
               ),

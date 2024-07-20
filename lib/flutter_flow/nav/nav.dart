@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../pages/contacts_list_page.dart';
 import '/auth/base_auth_user_provider.dart';
 
 import '/index.dart';
@@ -142,13 +141,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: 'MapView',
           path: '/mapView',
           builder: (context, params) => const MapViewWidget(),
-        ),
-        FFRoute(
-          name: 'ContactListPage',
-          path: '/contactListPage',
-          requireAuth: true,
-          builder: (context, params) => ContactPickerPage(),
-        ),
+        )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
 
@@ -335,8 +328,8 @@ class FFRoute {
               ? Container(
                   color: Colors.transparent,
                   child: Image.asset(
-                    'assets/images/UnifiedAssistLogo.PNG',
-                    fit: BoxFit.contain,
+                    'assets/images/first_page.png',
+                    fit: BoxFit.cover,
                   ),
                 )
               : page;
@@ -402,4 +395,14 @@ class RootPageContext {
         value: RootPageContext(true, errorRoute),
         child: child,
       );
+}
+
+extension GoRouterLocationExtension on GoRouter {
+  String getCurrentLocation() {
+    final RouteMatch lastMatch = routerDelegate.currentConfiguration.last;
+    final RouteMatchList matchList = lastMatch is ImperativeRouteMatch
+        ? lastMatch.matches
+        : routerDelegate.currentConfiguration;
+    return matchList.uri.toString();
+  }
 }
