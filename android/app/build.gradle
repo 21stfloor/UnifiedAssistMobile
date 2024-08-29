@@ -82,5 +82,19 @@ flutter {
 }
 
 dependencies {
+    def core_version = "1.13.1"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.10"
+    implementation "androidx.media:media:1.7.0"
+    implementation "androidx.core:core-ktx:1.13.1"
+//    implementation "androidx.appcompat:appcompat:1.7.0"
+    // Java language implementation
+    implementation "androidx.core:core:$core_version"
 }
+
+
+configurations.all {
+    resolutionStrategy {
+        force("androidx.core:core-ktx:1.9.0")
+    }
+}
+tasks.register("prepareKotlinBuildScriptModel"){}

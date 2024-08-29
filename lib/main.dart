@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -14,6 +15,8 @@ import 'package:flutter/services.dart';
 
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
 
 void main() async {
   await dotenv.load(fileName: ".env");
@@ -23,6 +26,23 @@ void main() async {
   await initFirebase();
 
   await FlutterFlowTheme.initialize();
+
+  const AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+    onDidReceiveNotificationResponse: (NotificationResponse response) {
+      // Handle notification tapped logic here
+    },
+  );
+
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
 
   // runApp(const MyApp());
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])

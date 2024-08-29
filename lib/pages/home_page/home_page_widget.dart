@@ -18,6 +18,9 @@ export 'home_page_model.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_sms/flutter_sms.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
+import 'package:volume_controller/volume_controller.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+import 'package:flutter/services.dart';
 
 class HomePageWidget extends BasePage {
   const HomePageWidget({super.key});
@@ -29,12 +32,22 @@ class HomePageWidget extends BasePage {
 
 class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProviderStateMixin{
   late HomePageModel _model;
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
+    // VolumeController().listener((volume) {
+    //   if (volume > 0.5) {
+    //     // Volume up key pressed
+    //     print('Volume Up Pressed');
+    //     playLoudAudio();
+    //   } else {
+    //     // Volume down key pressed
+    //     print('Volume Down Pressed');
+    //   }
+    // });
+
     _model = createModel(context, () => HomePageModel());
 
     _model.tabBarController = TabController(
@@ -62,10 +75,12 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-        appBar: PreferredSize(
+        appBar:
+        PreferredSize(
           preferredSize:
-              Size.fromHeight(MediaQuery.sizeOf(context).height * 0.08),
-          child: AppBar(
+              Size.fromHeight(MediaQuery.sizeOf(context).height * 0.10),
+          child:
+          AppBar(
             backgroundColor: FlutterFlowTheme.of(context).primary,
             automaticallyImplyLeading: false,
             actions: const [],
@@ -141,6 +156,7 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
                             ),
                         Expanded(
                           child: TabBarView(
+                            physics: const NeverScrollableScrollPhysics(),
                             controller: _model.tabBarController,
                             children: [
                               Container(
@@ -254,27 +270,27 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
                                               highlightColor:
                                                   Colors.transparent,
                                   onTap: () async {
-                                                await showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (alertDialogContext) {
-                                                    return WebViewAware(
-                                                      child: AlertDialog(
-                                                        title: const Text(
-                                                            'sample dialog'),
-                                                        content: const Text('dialog'),
-                                                        actions: [
-                                                          TextButton(
-                                                            onPressed: () =>
-                                                                Navigator.pop(
-                                                                    alertDialogContext),
-                                                            child: const Text('Ok'),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  },
-                                                );
+                                                // await showDialog(
+                                                //   context: context,
+                                                //   builder:
+                                                //       (alertDialogContext) {
+                                                //     return WebViewAware(
+                                                //       child: AlertDialog(
+                                                //         title: const Text(
+                                                //             'sample dialog'),
+                                                //         content: const Text('dialog'),
+                                                //         actions: [
+                                                //           TextButton(
+                                                //             onPressed: () =>
+                                                //                 Navigator.pop(
+                                                //                     alertDialogContext),
+                                                //             child: const Text('Ok'),
+                                                //           ),
+                                                //         ],
+                                                //       ),
+                                                //     );
+                                                //   },
+                                                // );
                                   },
                                   child: Container(
                                                 width: 140.0,
@@ -351,6 +367,8 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
                                           onPressed: () async {
                                                         setState(() => alarmState =
                                                             !alarmState);
+                                                        final SharedPreferences myPrefs = await preferences;
+                                                        myPrefs.setBool('alarmState', alarmState);
                                           },
                                                       value: alarmState,
                                           onIcon: Icon(
@@ -756,7 +774,7 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
                                   height:
                                       MediaQuery.sizeOf(context).height * 1.0,
                             verticalScroll: true,
-                            horizontalScroll: false,
+                            horizontalScroll: true,
                           ),
                               ),
                         ],

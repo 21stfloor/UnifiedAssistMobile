@@ -12,13 +12,7 @@ Future<String> sendSOS(String msg) async {
   bool result;
   // List<String> recipients = ["+639954261220"];
 
-    var contacts = await queryContactsRecordOnce(
-      queryBuilder: (contactsRecord) => contactsRecord.where(
-        'owner',
-        isEqualTo: currentUserReference,
-      ),
-    );
-    List<String> recipients = extractPhoneNumbers(contacts);
+    List<String> recipients = await getContacts();
 
     if(recipients.isEmpty){
       return "You don't have any contact yet, sms will not be send!";
@@ -50,6 +44,17 @@ Future<String> sendSOS(String msg) async {
     } catch (error) {
       return error.toString();
     }
+}
+
+Future<List<String>> getContacts() async {
+  var contacts = await queryContactsRecordOnce(
+    queryBuilder: (contactsRecord) => contactsRecord.where(
+      'owner',
+      isEqualTo: currentUserReference,
+    ),
+  );
+  List<String> recipients = extractPhoneNumbers(contacts);
+  return recipients;
 }
 
 

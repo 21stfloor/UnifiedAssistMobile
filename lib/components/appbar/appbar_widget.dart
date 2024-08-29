@@ -39,7 +39,7 @@ class _AppbarWidgetState extends State<AppbarWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 8.0),
+      padding: const EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,7 +52,7 @@ class _AppbarWidgetState extends State<AppbarWidget> {
             icon: const Icon(
               Icons.notifications_rounded,
               color: Colors.transparent,
-              size: 30.0,
+              size: 15.0,
             ),
             onPressed: () {
               print('IconButton pressed ...');
@@ -65,8 +65,8 @@ class _AppbarWidgetState extends State<AppbarWidget> {
               textAlign: TextAlign.center,
               style: FlutterFlowTheme.of(context).headlineMedium.override(
                     fontFamily: 'Poppins',
-                    color: Colors.transparent,
-                    fontSize: 23.0,
+                    color: Colors.white,
+                    fontSize: 18.0,
                     letterSpacing: 0.0,
                     fontWeight: FontWeight.w500,
                   ),

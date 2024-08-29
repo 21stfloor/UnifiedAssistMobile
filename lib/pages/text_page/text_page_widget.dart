@@ -91,7 +91,7 @@ class _TextPageWidgetState extends BasePageState<TextPageWidget> {
                             icon: const Icon(
                               Icons.arrow_back_rounded,
                               color: Colors.white,
-                              size: 30.0,
+                              size: 50.0,
                             ),
                             onPressed: () async {
                               context.pop();

@@ -52,7 +52,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
           icon: Icon(
             Icons.arrow_back_rounded,
             color: FlutterFlowTheme.of(context).primaryText,
-            size: 30.0,
+            size: 50.0,
           ),
           onPressed: () async {
             context.pop();
@@ -110,7 +110,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                           child: Icon(
                             Icons.arrow_back_rounded,
                             color: FlutterFlowTheme.of(context).primaryText,
-                            size: 24.0,
+                            size: 50.0,
                           ),
                         ),
                         Padding(
