@@ -81,7 +81,7 @@ class _OptionsWidgetState extends State<OptionsWidget> {
                   await authManager.signOut();
                   GoRouter.of(context).clearRedirectLocation();
 
-                  context.goNamedAuth('LandingPage', context.mounted);
+                  context.goNamedAuth('AuthPage', context.mounted);
                 },
                 child: Container(
                   width: double.infinity,

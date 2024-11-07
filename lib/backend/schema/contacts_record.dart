@@ -30,10 +30,16 @@ class ContactsRecord extends FirestoreRecord {
   DocumentReference? get owner => _owner;
   bool hasOwner() => _owner != null;
 
+  // "receiveSOS" field.
+  bool? _receiveSOS;
+  bool get receiveSOS => _receiveSOS ?? false;
+  bool hasReceiveSOS() => _receiveSOS != null;
+
   void _initializeFields() {
     _fullName = snapshotData['full_name'] as String?;
     _phoneNumber = snapshotData['phone_number'] as String?;
     _owner = snapshotData['owner'] as DocumentReference?;
+    _receiveSOS = snapshotData['receiveSOS'] as bool?;
   }
 
   static CollectionReference get collection =>
@@ -74,12 +80,14 @@ Map<String, dynamic> createContactsRecordData({
   String? fullName,
   String? phoneNumber,
   DocumentReference? owner,
+  bool? receiveSOS,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
       'full_name': fullName,
       'phone_number': phoneNumber,
       'owner': owner,
+      'receiveSOS': receiveSOS,
     }.withoutNulls,
   );
 
@@ -93,12 +101,13 @@ class ContactsRecordDocumentEquality implements Equality<ContactsRecord> {
   bool equals(ContactsRecord? e1, ContactsRecord? e2) {
     return e1?.fullName == e2?.fullName &&
         e1?.phoneNumber == e2?.phoneNumber &&
-        e1?.owner == e2?.owner;
+        e1?.owner == e2?.owner &&
+        e1?.receiveSOS == e2?.receiveSOS;
   }
 
   @override
-  int hash(ContactsRecord? e) =>
-      const ListEquality().hash([e?.fullName, e?.phoneNumber, e?.owner]);
+  int hash(ContactsRecord? e) => const ListEquality()
+      .hash([e?.fullName, e?.phoneNumber, e?.owner, e?.receiveSOS]);
 
   @override
   bool isValidKey(Object? o) => o is ContactsRecord;

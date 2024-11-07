@@ -1,3 +1,4 @@
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -26,6 +27,9 @@ void main() async {
   await initFirebase();
 
   await FlutterFlowTheme.initialize();
+  
+  final appState = FFAppState(); // Initialize FFAppState
+  await appState.initializePersistedState();
 
   const AndroidInitializationSettings initializationSettingsAndroid =
   AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -47,7 +51,13 @@ void main() async {
   // runApp(const MyApp());
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((value) =>
-      runApp(const MyApp()));
+      runApp(ChangeNotifierProvider(
+        create: (context) => appState,
+        child: const MyApp(),
+      ))
+  );
+
+
   // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
   //     .then((value) =>
   //     runApp(MaterialApp(

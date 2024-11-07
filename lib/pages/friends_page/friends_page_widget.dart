@@ -836,7 +836,7 @@ class _FriendsPageWidgetState extends BasePageState<FriendsPageWidget>
                                   motion: const ScrollMotion(),
                                   extentRatio: 0.25,
                                   children: [
-                                    SlidableAction(
+                                          SlidableAction(
                                       label: 'Delete',
                                       backgroundColor:
                                             FlutterFlowTheme.of(context)
@@ -906,6 +906,45 @@ class _FriendsPageWidgetState extends BasePageState<FriendsPageWidget>
                                   ],
                                 ),
                                 child: ListTile(
+                                  leading: IconButton(onPressed: () async {
+                                    await friendsListViewContactsRecord
+                                        .reference
+                                        .update(
+                                        createContactsRecordData(
+                                          receiveSOS:
+                                          !friendsListViewContactsRecord
+                                              .receiveSOS,
+                                        ));
+
+                                  }, icon:
+
+                                  Icon(
+                                      color: valueOrDefault<Color>(
+                                        friendsListViewContactsRecord
+                                            .receiveSOS ||
+                                            (friendsListViewContactsRecord
+                                                .hasReceiveSOS() ==
+                                                false)
+                                            ? FlutterFlowTheme.of(context)
+                                            .success
+                                            : FlutterFlowTheme.of(context)
+                                            .accent1,
+                                        FlutterFlowTheme.of(context).accent1,
+                                      ),
+                                      valueOrDefault<IconData>(
+                                  friendsListViewContactsRecord
+                                      .receiveSOS ||
+                                  (friendsListViewContactsRecord
+                                      .hasReceiveSOS() ==
+                                      false)
+                                      ? Icons.toggle_off_rounded
+                                      : Icons.toggle_on_rounded,
+                                        Icons.toggle_off_rounded,
+                                )
+                                  )
+
+
+                                  ),
                                 title: Text(
                                   friendsListViewContactsRecord.fullName,
                                   style: FlutterFlowTheme.of(context)
@@ -926,6 +965,7 @@ class _FriendsPageWidgetState extends BasePageState<FriendsPageWidget>
                                         letterSpacing: 0.0,
                                       ),
                                 ),
+
                                 trailing: Icon(
                                   Icons.arrow_forward_ios,
                                   color: FlutterFlowTheme.of(context)

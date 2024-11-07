@@ -11,8 +11,13 @@ import '/flutter_flow/flutter_flow_toggle_icon.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_web_view.dart';
 import 'package:flutter/gestures.dart';
+import '/walkthroughs/getting_started.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart'
+    show TutorialCoachMark;
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'home_page_model.dart';
 export 'home_page_model.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -50,11 +55,22 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
 
     _model = createModel(context, () => HomePageModel());
 
+    // On page load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      if (!FFAppState().doneGettingStarted) {
+        safeSetState(() =>
+            _model.gettingStartedController = createPageWalkthrough(context));
+        _model.gettingStartedController?.show(context: context);
+        FFAppState().doneGettingStarted = true;
+        safeSetState(() {});
+      }
+    });
+
     _model.tabBarController = TabController(
       vsync: this,
       length: 3,
       initialIndex: 0,
-    )..addListener(() => setState(() {}));
+    )..addListener(() => safeSetState(() {}));
   }
 
 
@@ -68,10 +84,10 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -91,8 +107,11 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
                 children: [
                   wrapWithModel(
                     model: _model.appbarModel,
-                    updateCallback: () => setState(() {}),
+                    updateCallback: () => safeSetState(() {}),
                     child: const AppbarWidget(),
+                  ).addWalkthrough(
+                    containerBozpghs7,
+                    _model.gettingStartedController,
                   ),
                 ],
                                   ),
@@ -137,7 +156,7 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
                             indicatorColor:
                                 FlutterFlowTheme.of(context).primaryText,
                             indicatorWeight: 4.0,
-                            tabs: const [
+                            tabs: [
                               Tab(
                                 text: 'Safety and Security',
                               ),
@@ -146,6 +165,9 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
                               ),
                               Tab(
                                 text: 'First Aid Tips',
+                              ).addWalkthrough(
+                                tabXd3w5zvw,
+                                _model.gettingStartedController,
                               ),
                             ],
                             controller: _model.tabBarController,
@@ -156,8 +178,8 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
                             ),
                         Expanded(
                           child: TabBarView(
-                            physics: const NeverScrollableScrollPhysics(),
                             controller: _model.tabBarController,
+                            physics: const NeverScrollableScrollPhysics(),
                             children: [
                               Container(
               width: double.infinity,
@@ -257,6 +279,9 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
                                       ),
                                     ],
                                   ),
+                                              ).addWalkthrough(
+                                                columnUkuh2dgb,
+                                                _model.gettingStartedController,
                                 ),
                                 ),
                               ),
@@ -388,6 +413,10 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
                                                 .secondaryText,
                                             size: 25.0,
                                           ),
+                                                    ).addWalkthrough(
+                                                      toggleIcon0a9yaxu8,
+                                                      _model
+                                                          .gettingStartedController,
                                         ),
                                       ],
                                     ),
@@ -489,6 +518,10 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
                                           ),
                                         ],
                                       ),
+                                                  ).addWalkthrough(
+                                                    columnM9f5g4n6,
+                                                    _model
+                                                        .gettingStartedController,
                                     ),
                                   ),
                                 ),
@@ -576,6 +609,9 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
                                       ),
                                     ),
                                   ),
+                                            ).addWalkthrough(
+                                              containerDm0qc91m,
+                                              _model.gettingStartedController,
                                 ),
                               ),
                               Align(
@@ -656,6 +692,9 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
                                       ),
                                     ],
                                   ),
+                                              ).addWalkthrough(
+                                                columnRexx1p2x,
+                                                _model.gettingStartedController,
                                 ),
                                 ),
                               ),
@@ -751,6 +790,10 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
                                           ),
                                         ],
                                       ),
+                                                ).addWalkthrough(
+                                                  columnBlrj1rqc,
+                                                  _model
+                                                      .gettingStartedController,
                                     ),
                                   ),
                                 ),
@@ -791,6 +834,33 @@ class _HomePageWidgetState extends BasePageState<HomePageWidget> with TickerProv
       ),
     );
   }
+
+  TutorialCoachMark createPageWalkthrough(BuildContext context) =>
+      TutorialCoachMark(
+        targets: createWalkthroughTargets(context),
+        onFinish: () async {
+          safeSetState(() => _model.gettingStartedController = null);
+        },
+        onSkip: () {
+          return true;
+        },
+        onClickOverlay: (p0) {
+          print('$p0');
+          if(p0.identify == "doneTab1"){
+            _model.tabBarController!.animateTo(1);
+          }
+        },
+        onClickTarget: (p0) {
+          if(p0.identify == "doneTab1"){
+            _model.tabBarController!.animateTo(1);
+          }
+        },
+        onClickTargetWithTapPosition: (p0, p1) {
+          if(p0.identify == "doneTab1"){
+            _model.tabBarController!.animateTo(1);
+          }
+        },
+      );
 }
 
 

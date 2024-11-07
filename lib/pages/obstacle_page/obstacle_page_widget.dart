@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -17,6 +18,7 @@ import 'dart:convert';
 import 'dart:convert' as convert;
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:camera_platform_interface/camera_platform_interface.dart';
+import 'dart:math' as math;
 
 class ObstaclePageWidget extends BasePage {
   const ObstaclePageWidget({super.key});
@@ -260,7 +262,7 @@ class _ObstaclePageWidgetState extends BasePageState<ObstaclePageWidget> {
 
   Widget _cameraPreviewWidget() {
     final CameraController? cameraController = controller;
-
+    cameraController?.lockCaptureOrientation(DeviceOrientation.landscapeLeft);
     if (cameraController == null || !cameraController.value.isInitialized || cameraController.value.isPreviewPaused) {
       return Container(
         decoration: const BoxDecoration(
@@ -275,7 +277,11 @@ class _ObstaclePageWidgetState extends BasePageState<ObstaclePageWidget> {
         color: Colors.black,
       ),
       child:
-       CameraPreview(controller!)
+      Transform(
+        alignment: Alignment.center,
+        transform: Matrix4.rotationY(math.pi),
+        child: CameraPreview(controller!),
+      ),
       );
     }
   }

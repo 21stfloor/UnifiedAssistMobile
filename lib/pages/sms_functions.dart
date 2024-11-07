@@ -49,10 +49,15 @@ Future<String> sendSOS(String msg) async {
 Future<List<String>> getContacts() async {
   var contacts = await queryContactsRecordOnce(
     queryBuilder: (contactsRecord) => contactsRecord.where(
+      'receiveSOS',
+      isEqualTo: true,
+    )
+        .where(
       'owner',
       isEqualTo: currentUserReference,
     ),
   );
+
   List<String> recipients = extractPhoneNumbers(contacts);
   return recipients;
 }
@@ -69,7 +74,7 @@ Future<String?> composeSMS() async {
   if(currentUserLocationValue!.latitude == 0){
     return "Unified Assist SOS: I am in need of immediate assistance. Please send help as soon as possible.";
   }
-  return "Unified Assist SOS: I am in need of immediate assistance. My current location is $mapUrl. Please send help as soon as possible.";
+  return "Unified Assist `SOS: I am in need of immediate assistance. My current location is $mapUrl. Please send help as soon as possible.";
 }
 
 List<String> extractPhoneNumbers(List<ContactsRecord> records) {
