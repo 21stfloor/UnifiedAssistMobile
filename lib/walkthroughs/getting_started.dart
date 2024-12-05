@@ -45,9 +45,10 @@ List<TargetFocus> createWalkthroughTargets(BuildContext context) => [
         contents: [
           TargetContent(
             align: ContentAlign.top,
-            builder: (context, __) => const WalkthroughTextWidget(
+            builder: (context, __) => WalkthroughTextWidget(
               title: 'Location button',
               description: 'This will show your current location in map',
+              action: () async {},
             ),
           ),
         ],
@@ -59,13 +60,14 @@ List<TargetFocus> createWalkthroughTargets(BuildContext context) => [
         enableOverlayTab: true,
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.Circle,
-        color: Colors.black,
+        color: const Color(0x7E000000),
         contents: [
           TargetContent(
             align: ContentAlign.top,
-            builder: (context, __) => const WalkthroughTextWidget(
+            builder: (context, __) => WalkthroughTextWidget(
               title: 'Alarm Generation',
               description: 'This will enable/disable alarm sos',
+              action: () async {},
             ),
           ),
         ],
@@ -73,18 +75,19 @@ List<TargetFocus> createWalkthroughTargets(BuildContext context) => [
 
       /// sos
       TargetFocus(
-        identify: "doneTab1",
+        identify: 'doneTab1',
         keyTarget: columnM9f5g4n6,
         enableOverlayTab: true,
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.Circle,
-        color: Colors.black,
+        color: const Color(0x7E000000),
         contents: [
           TargetContent(
-            align: ContentAlign.bottom,
-            builder: (context, __) => const WalkthroughTextWidget(
+            align: ContentAlign.top,
+            builder: (context, __) => WalkthroughTextWidget(
               title: 'Sos',
               description: 'This will show you list of your sos contacts',
+              action: () async {},
             ),
           ),
         ],
@@ -96,14 +99,15 @@ List<TargetFocus> createWalkthroughTargets(BuildContext context) => [
         enableOverlayTab: true,
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.Circle,
-        color: Colors.black,
+        color: const Color(0x7E000000),
         contents: [
           TargetContent(
-            align: ContentAlign.bottom,
-            builder: (context, __) => const WalkthroughTextWidget(
+            align: ContentAlign.top,
+            builder: (context, __) => WalkthroughTextWidget(
               title: 'Text Scan',
               description:
                   'Using your camera, this will read the text seen by the camera',
+              action: () async {},
             ),
           ),
         ],
@@ -115,13 +119,14 @@ List<TargetFocus> createWalkthroughTargets(BuildContext context) => [
         enableOverlayTab: true,
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.Circle,
-        color: Colors.black,
+        color: const Color(0x7E000000),
         contents: [
           TargetContent(
             align: ContentAlign.top,
-            builder: (context, __) => const WalkthroughTextWidget(
+            builder: (context, __) => WalkthroughTextWidget(
               title: 'Document scan',
-              description: 'This will read te texts in your document files',
+              description: 'This will read the texts in your document files',
+              action: () async {},
             ),
           ),
         ],
@@ -133,14 +138,15 @@ List<TargetFocus> createWalkthroughTargets(BuildContext context) => [
         enableOverlayTab: true,
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.Circle,
-        color: Colors.black,
+        color: const Color(0x7E000000),
         contents: [
           TargetContent(
             align: ContentAlign.bottom,
-            builder: (context, __) => const WalkthroughTextWidget(
+            builder: (context, __) => WalkthroughTextWidget(
               title: 'Obstacle scan',
               description:
                   'This will scan obstacle that may block your path in front of you',
+              action: () async {},
             ),
           ),
         ],
@@ -152,13 +158,14 @@ List<TargetFocus> createWalkthroughTargets(BuildContext context) => [
         enableOverlayTab: true,
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.Circle,
-        color: Colors.black,
+        color: const Color(0x7E000000),
         contents: [
           TargetContent(
             align: ContentAlign.bottom,
-            builder: (context, __) => const WalkthroughTextWidget(
+            builder: (context, __) => WalkthroughTextWidget(
               title: 'First aid tips',
               description: 'You can read first aid tips in here',
+              action: () async {},
             ),
           ),
         ],

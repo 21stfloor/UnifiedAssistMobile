@@ -9,10 +9,12 @@ class WalkthroughTextWidget extends StatefulWidget {
     super.key,
     required this.title,
     required this.description,
+    this.action,
   });
 
   final String? title;
   final String? description;
+  final Future Function()? action;
 
   @override
   State<WalkthroughTextWidget> createState() => _WalkthroughTextWidgetState();

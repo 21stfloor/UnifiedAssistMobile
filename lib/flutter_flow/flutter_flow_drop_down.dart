@@ -1,6 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
-
+import 'package:flutter/foundation.dart';
 import 'form_field_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -214,13 +214,17 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
       .map(
         (option) => DropdownMenuItem<T>(
             value: option,
-            child: WebViewAware(
-              child: Padding(
+            child: Builder(builder: (_) {
+              final child = Padding(
                 padding: _useDropdown2() ? horizontalMargin : EdgeInsets.zero,
                 child:
                     Text(optionLabels[option] ?? '', style: widget.textStyle),
-              ),
-            )),
+              );
+              if (kIsWeb) {
+                return WebViewAware(child: child);
+              }
+              return child;
+            })),
       )
       .toList();
 
@@ -234,8 +238,7 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
             builder: (context, menuSetState) {
               final isSelected =
                   multiSelectController.value?.contains(item) ?? false;
-              return InkWell(
-                  onTap: () {
+              return InkWell(onTap: () {
                     multiSelectController.value ??= [];
                     isSelected
                         ? multiSelectController.value!.remove(item)
@@ -245,9 +248,8 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
                     setState(() {});
                     // This rebuilds the dropdownMenu Widget to update the check mark.
                     menuSetState(() {});
-                  },
-                  child: WebViewAware(
-                    child: Container(
+              }, child: Builder(builder: (_) {
+                final child = Container(
                       height: double.infinity,
                       padding: horizontalMargin,
                       child: Row(
@@ -265,8 +267,12 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
                           ),
                         ],
                       ),
-                    ),
-                  ));
+                );
+                if (kIsWeb) {
+                  return WebViewAware(child: child);
+                }
+                return child;
+              }));
             },
           ),
         ),
@@ -309,10 +315,11 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
           : (isMultiSelect ? (_) {} : (val) => widget.controller!.value = val),
       isExpanded: true,
       selectedItemBuilder: (context) => widget.options
-          .map((item) => WebViewAware(
-                child: Align(
+          .map(
+            (item) => Align(
                   alignment: AlignmentDirectional.centerStart,
-                  child: Text(
+                child: Builder(builder: (_) {
+                  final child = Text(
                     isMultiSelect
                         ? currentValues
                             .where((v) => optionLabels.containsKey(v))
@@ -321,9 +328,13 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
                         : optionLabels[item]!,
                     style: widget.textStyle,
                     maxLines: 1,
-                  ),
-                ),
-              ))
+                  );
+                  if (kIsWeb) {
+                    return WebViewAware(child: child);
+                  }
+                  return child;
+                })),
+          )
           .toList(),
       dropdownSearchData: widget.isSearchable
           ? DropdownSearchData<T>(

@@ -277,11 +277,7 @@ class _ObstaclePageWidgetState extends BasePageState<ObstaclePageWidget> {
         color: Colors.black,
       ),
       child:
-      Transform(
-        alignment: Alignment.center,
-        transform: Matrix4.rotationY(math.pi),
-        child: CameraPreview(controller!),
-      ),
+      CameraPreview(controller!),
       );
     }
   }

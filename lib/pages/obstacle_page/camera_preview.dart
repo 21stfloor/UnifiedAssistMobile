@@ -25,34 +25,43 @@ class CameraPreview extends StatelessWidget {
         ? ValueListenableBuilder<CameraValue>(
       valueListenable: controller,
       builder: (BuildContext context, Object? value, Widget? child) {
-        return AspectRatio(
-          aspectRatio: _isLandscape()
-              ? controller.value.aspectRatio
-              : (1 / controller.value.aspectRatio),
-          child: Stack(
+        return
+          Stack(
             fit: StackFit.expand,
             children: <Widget>[
-              _wrapInRotatedBox(child: controller.buildPreview()),
+              // _wrapInRotatedBox(child: controller.buildPreview()),
+              controller.buildPreview(),
               child ?? Container(),
             ],
-          ),
-        );
+          );
+        //   AspectRatio(
+        //   aspectRatio: _isLandscape()
+        //       ? controller.value.aspectRatio
+        //       : (1 / controller.value.aspectRatio),
+        //   child: Stack(
+        //     fit: StackFit.expand,
+        //     children: <Widget>[
+        //       _wrapInRotatedBox(child: controller.buildPreview()),
+        //       child ?? Container(),
+        //     ],
+        //   ),
+        // );
       },
       child: child,
     )
         : Container();
   }
 
-  Widget _wrapInRotatedBox({required Widget child}) {
-    if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) {
-      return child;
-    }
-
-    return RotatedBox(
-      quarterTurns: _getQuarterTurns(),
-      child: child,
-    );
-  }
+  // Widget _wrapInRotatedBox({required Widget child}) {
+  //   if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) {
+  //     return child;
+  //   }
+  //
+  //   return RotatedBox(
+  //     quarterTurns: _getQuarterTurns(),
+  //     child: child,
+  //   );
+  // }
 
   bool _isLandscape() {
     return <DeviceOrientation>[

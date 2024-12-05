@@ -23,6 +23,10 @@ class FFAppState extends ChangeNotifier {
       _doneGettingStarted =
           prefs.getBool('ff_doneGettingStarted') ?? _doneGettingStarted;
     });
+    _safeInit(() {
+      _doneGettingStarted2 =
+          prefs.getBool('ff_doneGettingStarted2') ?? _doneGettingStarted2;
+    });
   }
 
   void update(VoidCallback callback) {
@@ -44,6 +48,13 @@ class FFAppState extends ChangeNotifier {
   set doneGettingStarted(bool value) {
     _doneGettingStarted = value;
     prefs.setBool('ff_doneGettingStarted', value);
+  }
+
+  bool _doneGettingStarted2 = false;
+  bool get doneGettingStarted2 => _doneGettingStarted2;
+  set doneGettingStarted2(bool value) {
+    _doneGettingStarted2 = value;
+    prefs.setBool('ff_doneGettingStarted2', value);
   }
 }
 
